@@ -10,16 +10,21 @@ import io.appium.java_client.MobileElement;
 
 public class Calc_Helper extends BaseDriver{
 	public void typeNum(String num, AppiumDriver<MobileElement> driver) {
+		boolean isMinus = false;
 		for(int i=0;i<num.length();i++) {
 			if(num.charAt(i) == '.') {
 				driver.findElement(By.name("decimal")).click();
-			} else {
+			} else if(num.charAt(i) == '-'){
+				isMinus = true;
+			}else {
 				driver.findElement(By.name(String.valueOf(num.charAt(i)))).click();
 			}
 		}
+		if(isMinus) driver.findElement(By.name("plus, minus")).click();
 	}
 	//operator: divide,multiply,subtract,add
 	public void basicOperation(String operator, String n1, String n2, AppiumDriver<MobileElement> driver) {
+		driver.getPageSource();
 		typeNum(n1,driver);
 		driver.findElement(By.name(operator)).click();
 		typeNum(n2,driver);
