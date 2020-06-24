@@ -1,6 +1,7 @@
 package tests;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -18,9 +19,9 @@ public class Phone_Helper extends BaseDriver{
 		for(int i =0;i<num.length();i++) {
 			driver.findElement(By.name(String.valueOf(num.charAt(i)))).click();
 		}
+		//System.out.println(driver.getPageSource());
 		driver.findElement(By.name("Call")).click();
-		driver.context("NATIVE_APP");
-		System.out.println(driver.getPageSource());
+		disconnectCall(driver);
 		
 		//driver.findElement(By.id("End Call")).click();
 	}
@@ -33,9 +34,20 @@ public class Phone_Helper extends BaseDriver{
 		if(home) driver.findElement(By.name("home, Call")).click();
 		boolean work = driver.findElements(By.name("work, Call")).size() > 0;
 		if(work) driver.findElement(By.name("work, Call")).click();
-	}
-	public void disconnectCall() {
+		disconnectCall(driver);
 		
+	}
+	public boolean disconnectCall(AppiumDriver<MobileElement> driver) {
+		boolean isCalling = false;
+		List<MobileElement> ele = driver.findElementsByXPath("//XCUIElementTypeButton");
+		for(int i =0; i<ele.size();i++) {
+			if(ele.get(i).getAttribute("name") != null && ele.get(i).getAttribute("name").equals("End call")) {
+				ele.get(i).click();
+				isCalling = true;
+				break;
+			}
+		}
+		return isCalling;
 	}
 	
 }

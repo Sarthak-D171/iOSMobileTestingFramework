@@ -31,7 +31,14 @@ public class Safari_Helper extends BaseDriver{
 		driver.getContextHandles();
 		String currentContext = driver.getContext();
 		driver.context("NATIVE_APP");
-		System.out.println(driver.getPageSource());
+		//System.out.println(driver.getPageSource());
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").sendKeys(search);
+		//System.out.println(driver.getPageSource());
+		driver.findElementByXPath("//XCUIElementTypeKeyboard/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeButton[@label='Search']").click();
+		driver.findElementByXPath("//XCUIElementTypeCollectionView/XCUIElementTypeCell/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeButton").click();
+		
+		//System.out.println(driver.getPageSource());
 	}
 	public void goToURL(String url, AppiumDriver<MobileElement> driver) {
 		driver.get(url);

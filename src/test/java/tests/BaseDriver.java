@@ -27,12 +27,13 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-	
-	
-	
+
+	//Edit DeviceName if you want to use a different device. 
+	//Can Get Device Name from phone going to General->About
+	//Creates desired capabilities for the driver
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String deviceName = "TransmitterTeam’s iPhone";
+		String deviceName = "misha’s iPhone";
 		String versionName = "";
 		String udidName = "";
 		Process device_process = Runtime.getRuntime().exec("instruments -s devices");
@@ -86,6 +87,7 @@ public class BaseDriver {
 		caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 60);
 	}
 	
+	//Opens standard native IOS apps given app name and constructs a new driver
 	public IOSDriver openNativeApp(String key) throws MalformedURLException {
 		HashMap<String,String> app_bundle = new HashMap<String,String>();
 		app_bundle.put("Activity", "com.apple.Fitness");
@@ -147,7 +149,9 @@ public class BaseDriver {
 
         //driver.executeScript("mobile: launchApp", args);
 	}
-	public IOSDriver openApp(String key) throws MalformedURLException {
+	
+	//Opens apps given a bundleId and constructs a new driver. Use for 3rd party apps
+	public IOSDriver openBundleID(String key) throws MalformedURLException {
 		HashMap<String, Object> args = new HashMap<String,Object>();
 
         args.put("bundleId", key);
@@ -158,12 +162,17 @@ public class BaseDriver {
 		return (IOSDriver) driver;
 
 	}
-
+	//Simulates clicking homeButton
 	public void homeButton() {
 		driver.executeScript("mobile: pressButton", ImmutableMap.of("name","home"));
 	}
+	public void terminateApp(String bundleID) {
+		driver.terminateApp(bundleID);
+	}
+	//Modify Later?
 	@AfterTest
 	public void teardown() {
+		homeButton();
 		//driver.closeApp();
 		//driver.quit();
 	}
