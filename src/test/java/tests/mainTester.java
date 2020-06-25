@@ -53,6 +53,7 @@ public class mainTester extends BaseDriver{
 		homeButton();
 	}
 	*/
+	/*
 	
 	
 	@Test
@@ -67,7 +68,7 @@ public class mainTester extends BaseDriver{
 		c.basicOperation("add", "40", "20", driver);
 		//p.callContact("Temp Temp",driver);
 	}
-	
+	*/
 	/*
 	@Test
 	public void dexcomTest1() throws MalformedURLException {
@@ -119,8 +120,10 @@ public class mainTester extends BaseDriver{
 	*/
 	@Test
 	public void testYoutube() throws MalformedURLException, InterruptedException {
+		Youtube_Helper y = new Youtube_Helper();
 		driver = openBundleID("com.google.ios.youtube");
 		System.out.println(driver.getPageSource());
+		y.openVid(driver);
 	}
 	
 	
