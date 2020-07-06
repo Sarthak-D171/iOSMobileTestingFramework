@@ -69,16 +69,28 @@ public class mainTester extends BaseDriver{
 		//p.callContact("Temp Temp",driver);
 	}
 	*/
-	/*
+	
 	@Test
-	public void dexcomTest1() throws MalformedURLException {
+	public void dexcomTest1() throws MalformedURLException, InterruptedException {
 		driver = openBundleID("com.dexcom.G6");
 		DexomcG6_Helper d = new DexomcG6_Helper();
-		d.logIn(driver);
-		d.newSensor("1015", driver);
-		System.out.println("Hello");
+		//d.logIn(driver);
+		d.startSensorSession("7171", driver);
+		Thread.sleep(10000);
+		while(!d.alertHandler(driver) && d.warmingUp(driver)) {
+			Thread.sleep(30000); //15 mins
+		}
+		while(d.sessionActive(driver)) {
+			System.out.println(d.getEGVVal(driver));
+		}
+		//d.alertHandler(driver);
+		//d.endSensorSession(driver);
+		//d.navigateHome(driver);
+		//System.out.println(driver.getPageSource());
+		//System.out.println(d.sessionError(driver));
+		//System.out.println(d.sessionActive(driver));
 	}
-	*/
+	
 	/*
 	
 	@Test
@@ -118,6 +130,7 @@ public class mainTester extends BaseDriver{
 		
 	}
 	*/
+	/*
 	@Test
 	public void testYoutube() throws MalformedURLException, InterruptedException {
 		Youtube_Helper y = new Youtube_Helper();
@@ -125,6 +138,7 @@ public class mainTester extends BaseDriver{
 		System.out.println(driver.getPageSource());
 		y.openVid(driver);
 	}
+	*/
 	
 	
 	

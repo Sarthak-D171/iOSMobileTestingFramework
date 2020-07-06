@@ -84,7 +84,7 @@ public class BaseDriver {
 		caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
 		caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, versionName);
 		caps.setCapability(MobileCapabilityType.UDID, udidName);
-		caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 60);
+		//caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 60);
 	}
 	
 	//Opens standard native IOS apps given app name and constructs a new driver
