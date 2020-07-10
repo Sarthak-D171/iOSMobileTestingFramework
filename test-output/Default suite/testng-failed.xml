@@ -7,7 +7,7 @@
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="testYoutube"/>
+          <include name="dexcomStress"/>
         </methods>
       </class> <!-- tests.mainTester -->
     </classes>

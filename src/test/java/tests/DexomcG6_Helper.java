@@ -18,6 +18,17 @@ public class DexomcG6_Helper {
 		//System.out.println(driver.getPageSource());
 		driver.findElementByXPath("//XCUIElementTypeButton[@label='Log in Later']").click();
 	}
+	// COMPLETE
+	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver) throws InterruptedException {
+		identifyError(driver);
+		long finish = System.currentTimeMillis() + mins*60*1000; // end time
+		while (sessionActive(driver) && System.currentTimeMillis() < finish) {
+			alertHandler(driver);
+			int val = getEGVVal(driver);
+			System.out.println(val);
+			Thread.sleep(30000); //30 sec
+		}	
+	}
 	//COMPLETE
 	public void startSensorSession(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
 		navigateHome(driver);
@@ -43,17 +54,20 @@ public class DexomcG6_Helper {
 	public int getEGVVal(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
-			WebElement egv = driver.findElementByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther");
-			String s = egv.getAttribute("name");
-			String val = s.split("\\s+")[0];
-			return Integer.valueOf(val);
+			if(driver.findElementsByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther").size()>0) {
+				WebElement egv = driver.findElementByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther");
+				String s = egv.getAttribute("name");
+				String val = s.split("\\s+")[0];
+				return Integer.valueOf(val);
+			}
 		}
+		identifyError(driver);
 		return -1;
 	}
 	// COMPLETE
 	public void endSensorSession(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
-		if(sessionActive(driver) || sessionError(driver)) {
+		if(!sessionInactive(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
 			RemoteWebElement sens = driver.findElementByXPath("//XCUIElementTypeTable");
 			String parentID = sens.getId();
@@ -67,16 +81,45 @@ public class DexomcG6_Helper {
 			System.out.println(driver.getPageSource());
 		}
 	}
-	// COMPLETE
-	public boolean sessionError(AppiumDriver<MobileElement> driver) {
-		navigateHome(driver);
-		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Sensor Error']").size()>0;
+	public boolean identifyError(AppiumDriver<MobileElement> driver) {
+		if(sessionActive(driver)) {
+			System.out.println("No Error");
+			return false;
+		}
+		else if(sensorError(driver)) {
+			System.out.println("Sensor Error");
+		}
+		else if(bluetoothError(driver)) {
+			System.out.println("Bluetooth Error");
+		}
+		else if(signalLoss(driver)) {
+			System.out.println("Signal Loss");
+		}
+		return true;
 	}
 	
 	// COMPLETE
+	public boolean sensorError(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
+		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Sensor Error']").size()>0;
+	}
+	public boolean signalLoss(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
+		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Signal Loss']").size()>0;
+	}
+	// COMPLETE
 	public boolean sessionActive(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
-		return !(driver.findElementsByXPath("//XCUIElementTypeButton[@label='New Sensor']").size()>0) && !warmingUp(driver) && !sessionError(driver);
+		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver);
+	}
+	// COMPLETE
+	public boolean sessionInactive(AppiumDriver<MobileElement> driver) {
+		return driver.findElementsByXPath("//XCUIElementTypeButton[@label='New Sensor']").size()>0;
+	}
+	//COMPLETE
+	public boolean bluetoothError(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
+		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Bluetooth Off']").size()>0;
 	}
 	// COMPLETE
 	public boolean warmingUp(AppiumDriver<MobileElement> driver) {
@@ -86,12 +129,32 @@ public class DexomcG6_Helper {
 	}
 	// COMPLETE (add alerts as necessary)
 	public boolean alertHandler(AppiumDriver<MobileElement> driver) {
-		if(warmupAlert(driver) || lowAlert(driver) || highAlert(driver) || noReadingAlert(driver)) {
+		boolean validAlert = false;
+		if(warmupAlert(driver)) {
+			System.out.println("Got Warmup Alert");
+			validAlert = true;
+		}
+		if(lowAlert(driver)) {
+			System.out.println("Got Low Alert");
+			validAlert = true;
+		}
+		if(highAlert(driver)) {
+			System.out.println("Got High Alert");
+			validAlert = true;
+		}
+		if(noReadingAlert(driver)) {
+			System.out.println("Got No Reading Alert");
+			validAlert = true;
+		}
+		if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='OK']").size()>0) {
+			if(!validAlert) {
+				System.out.println("Unidentified Alert");
+			}
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='OK']").click();
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+		
 	}
 	// COMPLETE
 	public boolean warmupAlert(AppiumDriver<MobileElement> driver) {
@@ -122,6 +185,7 @@ public class DexomcG6_Helper {
 	}
 	// COMPLETE
 	public void navigateHome(AppiumDriver<MobileElement> driver) {
+		//System.out.println(isHome(driver));
 		while(!isHome(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").click();
 		}
