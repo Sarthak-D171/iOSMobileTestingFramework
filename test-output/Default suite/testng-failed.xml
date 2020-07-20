@@ -7,7 +7,7 @@
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="dexcomStress"/>
+          <include name="appStoreTest"/>
         </methods>
       </class> <!-- tests.mainTester -->
     </classes>
