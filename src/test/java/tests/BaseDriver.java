@@ -27,15 +27,27 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-
-	//Edit DeviceName if you want to use a different device. 
-	//Can Get Device Name from phone going to General->About
-	//Creates desired capabilities for the driver
+	
+	/*
+	*
+	* Edit DeviceName and type if you want to use a different device. 
+	* Can Get Device Name from phone going to General->About OR
+	* Running instruments -s devices (IOS) OR adb devices (ANDROID) in terminal
+	* 
+	* Function runs before every test and sets the base desired
+	* capabilities that the driver will use. Make sure that the device
+	* name string is accurate as well as the type String as those will
+	* be used to appropriately get the rest of the device capabilities.
+	*
+	* TODO: Make type and device name program arguments
+	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String deviceName = "misha’s iPhone";
+		String type = "android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
+		
 		Process device_process = Runtime.getRuntime().exec("instruments -s devices");
 		StringBuilder device_output = new StringBuilder();
 		BufferedReader reader = new BufferedReader(
@@ -87,7 +99,17 @@ public class BaseDriver {
 		caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 	}
 	
-	//Opens standard native IOS apps given app name and constructs a new driver
+	/*
+	 * ONLY USABLE WITH DEFAULT IOS APPS. 
+	 * If you are having issues then double check the app_bundle dictionary and see if your app is included.
+	 * If your app is not included then use openBundleId or add the app to app_bundle dictionary. 
+	 * 
+	 * 
+	 * Constructs and returns the final usable driver. 
+	 * This usable driver will be used in conjunction with the Helper methods.
+	 * 
+	 * 
+	 */
 	public IOSDriver openNativeApp(String key) throws MalformedURLException {
 		HashMap<String,String> app_bundle = new HashMap<String,String>();
 		app_bundle.put("Activity", "com.apple.Fitness");
@@ -150,7 +172,14 @@ public class BaseDriver {
         //driver.executeScript("mobile: launchApp", args);
 	}
 	
-	//Opens apps given a bundleId and constructs a new driver. Use for 3rd party apps
+	/*
+	 * ONLY USABLE FOR IOS.
+	 * 
+	 * Opens an app given the correct bundleID. 
+	 * 
+	 * The following link can be used to get the bundleID of any IOS APP installed on the test device.
+	 * https://stackoverflow.com/questions/27509838/how-to-get-bundle-id-of-ios-app-either-using-ipa-file-or-app-installed-on-iph
+	 */
 	public IOSDriver openBundleID(String key) throws MalformedURLException {
 		HashMap<String, Object> args = new HashMap<String,Object>();
 
@@ -162,14 +191,22 @@ public class BaseDriver {
 		return (IOSDriver) driver;
 
 	}
-	//Simulates clicking homeButton
+	
+	/*
+	 *  SIMULATES CLICKING HOME BUTTON
+	 *  
+	 *  Call during tests so that u exit and put an app in the background
+	 *  before opening a new app. 
+	 */
 	public void homeButton() {
 		driver.executeScript("mobile: pressButton", ImmutableMap.of("name","home"));
 	}
-	public void terminateApp(String bundleID) {
-		driver.terminateApp(bundleID);
-	}
-	//Modify Later?
+	
+	/*
+	 * RUNS AFTER EVERY TEST
+	 * 
+	 * Currently allows you to chain tests. Modify later according to needs.
+	 */
 	@AfterTest
 	public void teardown() {
 		homeButton();

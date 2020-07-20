@@ -13,12 +13,15 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 
 public class DexomcG6_Helper {
+	
 	// INCOMPLETE
+	// FUNCTION THAT AUTOMATES LOG IN PROCESS
 	public void logIn(AppiumDriver<MobileElement> driver) {
 		//System.out.println(driver.getPageSource());
 		driver.findElementByXPath("//XCUIElementTypeButton[@label='Log in Later']").click();
 	}
-	// COMPLETE
+	
+	// PRINT EGV VALUE FOR N MINS AND PRINT ANY ALERTS
 	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver) throws InterruptedException {
 		identifyError(driver);
 		long finish = System.currentTimeMillis() + mins*60*1000; // end time
@@ -29,10 +32,36 @@ public class DexomcG6_Helper {
 			Thread.sleep(30000); //30 sec
 		}	
 	}
-	//COMPLETE
+	
+	// UNTESTED
+	// Connects to a new Transmitter. Should only be possible if session inactive?
+	public void connectnewTransmitter(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
+		navigateHome(driver);
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
+		driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Transmitter']").click();
+		driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Pair New']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+		driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(code);
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+		System.out.println(driver.getPageSource());
+		for(int i =0;i<code.length();i++) {
+			driver.findElement(By.name(String.valueOf(code.charAt(i)))).click();
+		}
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
+		System.out.println(driver.getPageSource());
+		Thread.sleep(10000);
+		driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
+		
+	}
+	
+	// Starts a new Sensor Session if sensor is currently inactive. 
 	public void startSensorSession(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
 		navigateHome(driver);
-		if(!sessionActive(driver)) {
+		if(sessionInactive(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='New Sensor']").click();
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
@@ -50,7 +79,8 @@ public class DexomcG6_Helper {
 
 		}
 	}
-	// COMPLETE
+	
+	// Gets an EGV Value one time. IF we have an error obstructing getting an EGV Value, prints that error
 	public int getEGVVal(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
@@ -64,7 +94,9 @@ public class DexomcG6_Helper {
 		identifyError(driver);
 		return -1;
 	}
-	// COMPLETE
+	
+	
+	// Ends a Sensor Session. Requires that a session is not inactive.
 	public void endSensorSession(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
 		if(!sessionInactive(driver)) {
@@ -81,6 +113,10 @@ public class DexomcG6_Helper {
 			System.out.println(driver.getPageSource());
 		}
 	}
+	
+	
+	// Function that checks for all errors and prints out what error 
+	// we got if there is an error. Should check every loop.
 	public boolean identifyError(AppiumDriver<MobileElement> driver) {
 		if(sessionActive(driver)) {
 			System.out.println("No Error");
@@ -95,8 +131,18 @@ public class DexomcG6_Helper {
 		else if(signalLoss(driver)) {
 			System.out.println("Signal Loss");
 		}
+		else if(sessionEnded(driver)) {
+			System.out.println("Session Ended");
+		}
 		return true;
 	}
+	
+	/*
+	 * The Following are all boolean methods to determine what state the App is in.
+	 * 
+	 * We can use these boolean methods to make appropriate decisions on what are test should do next.
+	 * In addition, this will let us know if we have somehow encountered an error.
+	 */
 	
 	// COMPLETE
 	public boolean sensorError(AppiumDriver<MobileElement> driver) {
@@ -110,10 +156,16 @@ public class DexomcG6_Helper {
 	// COMPLETE
 	public boolean sessionActive(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
-		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver);
+		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver) && !sessionEnded(driver);
+	}
+	// COMPLETE
+	public boolean sessionEnded(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
+		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Session Ended']").size()>0;
 	}
 	// COMPLETE
 	public boolean sessionInactive(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
 		return driver.findElementsByXPath("//XCUIElementTypeButton[@label='New Sensor']").size()>0;
 	}
 	//COMPLETE
@@ -121,12 +173,32 @@ public class DexomcG6_Helper {
 		navigateHome(driver);
 		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Bluetooth Off']").size()>0;
 	}
+	
 	// COMPLETE
 	public boolean warmingUp(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
 		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Sensor Warmup']").size()>0
 				&& driver.findElementsByXPath("//XCUIElementTypeOther[@name='sensor_warmup_circle']").size()>0;
 	}
+	
+
+	
+	/*
+	 * Everything from this point down has to do with alerts. 
+	 * 
+	 * We have an alert handler that prints the type of alert on screen
+	 * or if no alert does nothing. This will be the main method we use 
+	 * to identify alerts during tests and handle them.
+	 * 
+	 * Each method below the alert handler is a boolean function
+	 * that returns True if the alert is visible, or False otherwise.
+	 * 
+	 * For Future, updates. Add a boolean method to check if alert is on screen.
+	 * Once you confirm that the method to check for alert works. Add it into the 
+	 * alert handler. 
+	 * 	
+	 */
+	
 	// COMPLETE (add alerts as necessary)
 	public boolean alertHandler(AppiumDriver<MobileElement> driver) {
 		boolean validAlert = false;
@@ -146,6 +218,11 @@ public class DexomcG6_Helper {
 			System.out.println("Got No Reading Alert");
 			validAlert = true;
 		}
+		if(bluetoothPairingAlert(driver)) {
+			System.out.println("Bluetooth Pairing");
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Pair']").click();
+			return true;
+		}
 		if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='OK']").size()>0) {
 			if(!validAlert) {
 				System.out.println("Unidentified Alert");
@@ -155,6 +232,12 @@ public class DexomcG6_Helper {
 		}
 		return false;
 		
+	}
+	
+	//COMPLETE
+	public boolean bluetoothPairingAlert(AppiumDriver<MobileElement> driver) {
+		return driver.findElementsByXPath("//XCUIElementTypeButton[@label='Pair']").size()>0 
+				&& driver.findElementsByXPath("//XCUIElementTypeStaticText[@name='Bluetooth Pairing Request']").size()>0;
 	}
 	// COMPLETE
 	public boolean warmupAlert(AppiumDriver<MobileElement> driver) {
@@ -177,7 +260,15 @@ public class DexomcG6_Helper {
 				&& driver.findElementsByXPath("//XCUIElementTypeStaticText[@name='No Readings Alert']").size()>0;
 	}
 	
-	// COMPLETE
+	/*
+	 * 
+	 * Collection of methods that always brings us back to the home Screen. 
+	 * 
+	 * Important since all information and methods are written to be directed from the home screen.
+	 * 
+	 * Haven't found a case where navigateHome breaks. But if you do pls update accordingly.
+	 */
+	//COMPLETE
 	public boolean isHome(AppiumDriver<MobileElement> driver) {
 		return driver.findElementsByXPath("//XCUIElementTypeButton[@label='Share']").size()>0 
 				&& driver.findElementsByXPath("//XCUIElementTypeButton[@label='Events']").size()>0
@@ -190,4 +281,5 @@ public class DexomcG6_Helper {
 			driver.findElementByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").click();
 		}
 	}
+	
 }

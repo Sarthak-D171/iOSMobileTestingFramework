@@ -78,15 +78,41 @@ public class mainTester extends BaseDriver{
 	}
 	*/
 	/*
+	
 	@Test
 	public void dexcomTest1() throws InterruptedException, MalformedURLException {
 		driver = openBundleID("com.dexcominc.G6");
 		//driver = openBundleID("com.dexcom.G6");
 		DexomcG6_Helper d = new DexomcG6_Helper();
-		System.out.println(d.signalLoss(driver));
-		System.out.println(d.sessionActive(driver));
+		//d.connectnewTransmitter("8HM0X9", driver);
+		System.out.println(driver.getPageSource());
+		//System.out.println(d.sessionEnded(driver));
+		//System.out.println(d.sessionActive(driver));
 	}
 	*/
+	
+	@Test
+	public void dexcomDownloadTest() throws InterruptedException, MalformedURLException {
+		driver = openNativeApp("App Store");
+		DexomcG6_Helper d = new DexomcG6_Helper();
+		AppStore_Helper a = new AppStore_Helper();
+		
+		a.downloadApp("vainglory", driver);
+		
+		driver = openBundleID("com.dexcominc.G6");
+		homeButton();
+		d.getEGV_N_Mins(5, driver);
+	}
+	
+	@Test
+	public void appStoreTest() throws InterruptedException, MalformedURLException {
+		driver = openNativeApp("App Store");
+		//driver = openBundleID("com.dexcom.G6");
+		AppStore_Helper a = new AppStore_Helper();
+		a.downloadApp("vainglory", driver);
+		//System.out.println(driver.getPageSource());
+	}
+	
 	/*
 	
 	@Test
@@ -146,6 +172,7 @@ public class mainTester extends BaseDriver{
 	
 	}
 	*/
+	/*
 	@Test
 	public void dexcomStress() throws MalformedURLException, InterruptedException {
 		driver = openBundleID("com.dexcominc.G6");
@@ -190,6 +217,7 @@ public class mainTester extends BaseDriver{
 		d.getEGV_N_Mins(10, driver);
 	
 	}
+	*/
 	/*
 	
 	@Test

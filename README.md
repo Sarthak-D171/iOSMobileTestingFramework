@@ -2,7 +2,8 @@
 Use Appium, Selenium and TestNg to create an IOS testing framework
 
 ### How to use:   
-Follow instructions located at: Z:\eng6340\SoftwareTesting\TransmitterVnV_MAC_IOSSetUp.   
+Follow instructions located at: Z:\eng6340\SoftwareTesting\TransmitterVnV_MAC_IOSSetUp.
+Instructions also copied in Android-Mac Appium Setup and IOS Testing Setup documents in this repository.   
 This will setup appium, and java accordingly. Be sure to get the correct versions that match the device you are using.    
 
 Follow instructures located here: https://www.edureka.co/community/34006/how-to-install-testng-in-eclipse. 
