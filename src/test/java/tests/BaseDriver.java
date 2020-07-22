@@ -43,60 +43,69 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String type = "Android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
-		
-		Process device_process = Runtime.getRuntime().exec("instruments -s devices");
-		StringBuilder device_output = new StringBuilder();
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(device_process.getInputStream()));
-
-		String line;
-		while ((line = reader.readLine()) != null) {
-			device_output.append(line + "\n");
-		}
-
-		int exitVal = device_process.waitFor();
-		if (exitVal == 0) {
-			String devices = device_output.toString();
-			int dIndex = devices.indexOf(deviceName);
-			if(dIndex == -1) {
-				System.out.println("Invalid device");
-				System.exit(0);
+		if(type.equals("iOS")) {
+			Process device_process = Runtime.getRuntime().exec("instruments -s devices");
+			StringBuilder device_output = new StringBuilder();
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(device_process.getInputStream()));
+	
+			String line;
+			while ((line = reader.readLine()) != null) {
+				device_output.append(line + "\n");
 			}
-			int vIndex = dIndex+deviceName.length();
-			while(devices.charAt(vIndex) != '(') {
-				vIndex+=1;
-			}
-			vIndex +=1;
-			int vCindex = vIndex;
-			while(devices.charAt(vCindex) != ')') {
-				vCindex+=1;
-			}
-			versionName = devices.substring(vIndex,vCindex);
-			int uidIndex =  dIndex+deviceName.length();
-			while(devices.charAt(uidIndex) != '[') {
+	
+			int exitVal = device_process.waitFor();
+			if (exitVal == 0) {
+				String devices = device_output.toString();
+				int dIndex = devices.indexOf(deviceName);
+				if(dIndex == -1) {
+					System.out.println("Invalid device");
+					System.exit(0);
+				}
+				int vIndex = dIndex+deviceName.length();
+				while(devices.charAt(vIndex) != '(') {
+					vIndex+=1;
+				}
+				vIndex +=1;
+				int vCindex = vIndex;
+				while(devices.charAt(vCindex) != ')') {
+					vCindex+=1;
+				}
+				versionName = devices.substring(vIndex,vCindex);
+				int uidIndex =  dIndex+deviceName.length();
+				while(devices.charAt(uidIndex) != '[') {
+					uidIndex+=1;
+				}
 				uidIndex+=1;
+				int uidCIndex = uidIndex;
+				while(devices.charAt(uidCIndex) != ']') {
+					uidCIndex+=1;
+				}
+				udidName = devices.substring(uidIndex,uidCIndex);
+				System.out.println(deviceName);
+				System.out.println(versionName);
+				System.out.println(udidName);
+				
+				caps = new DesiredCapabilities();
+				caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
+				caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+				caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, versionName);
+				caps.setCapability(MobileCapabilityType.UDID, udidName);
+				caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 			}
-			uidIndex+=1;
-			int uidCIndex = uidIndex;
-			while(devices.charAt(uidCIndex) != ']') {
-				uidCIndex+=1;
-			}
-			udidName = devices.substring(uidIndex,uidCIndex);
+		} else {
+			caps = new DesiredCapabilities();
+			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "9.0");
+			caps.setCapability(MobileCapabilityType.UDID, udidName);
+			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		}
-		System.out.println(deviceName);
-		System.out.println(versionName);
-		System.out.println(udidName);
 		
-		caps = new DesiredCapabilities();
-		caps.setCapability(MobileCapabilityType.PLATFORM_NAME, "iOS");
-		caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-		caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, versionName);
-		caps.setCapability(MobileCapabilityType.UDID, udidName);
-		caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 	}
 	
 	/*
