@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -43,7 +45,7 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "Android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String type = "iOS"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
@@ -100,9 +102,9 @@ public class BaseDriver {
 		} else {
 			caps = new DesiredCapabilities();
 			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
-			caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "9.0");
-			caps.setCapability(MobileCapabilityType.UDID, udidName);
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "OnePLus 6T");
+			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.3.4");
+			caps.setCapability(MobileCapabilityType.UDID, "329e4e63");
 			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		}
 		
@@ -199,6 +201,23 @@ public class BaseDriver {
 		driver.executeScript("mobile: launchApp", args);
 		return (IOSDriver) driver;
 
+	}
+	
+	public AndroidDriver openAndroidApp(String name) throws MalformedURLException {
+		HashMap<String,String[]> app_bundle = new HashMap<String,String[]>();
+		app_bundle.put("Dexcom",new String[]{"com.dexcom.g6", "com.dexcom.cgm.activities.AppCompatabilityActivity"});
+		app_bundle.put("Spotify",new String[]{"com.spotify.music", "com.spotify.music.MainActivity"});
+		app_bundle.put("PlayStore",new String[]{"com.android.vending", "com.google.android.finsky.activities.MainActivity"});
+		app_bundle.put("YouTube",new String[]{"com.google.android.youtube", "com.google.android.youtube.HomeActivity"});
+		app_bundle.put("SnapChat",new String[]{"com.snapchat.android", "com.snap.mushroom.MainActivity"});
+		
+		
+		caps.setCapability("appPackage", app_bundle.get(name)[0]);
+		caps.setCapability("appActivity",app_bundle.get(name)[1]);
+		URL url = new URL("http://127.0.0.1:4723/wd/hub");
+		driver = new AndroidDriver<MobileElement>(url,caps);
+		return (AndroidDriver) driver;
+		
 	}
 	
 	/*

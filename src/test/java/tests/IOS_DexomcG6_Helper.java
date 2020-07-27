@@ -12,7 +12,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 
-public class DexomcG6_Helper {
+public class IOS_DexomcG6_Helper {
 	
 	// INCOMPLETE
 	// FUNCTION THAT AUTOMATES LOG IN PROCESS
