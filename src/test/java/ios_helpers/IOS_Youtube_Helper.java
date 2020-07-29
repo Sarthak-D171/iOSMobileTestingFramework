@@ -1,9 +1,10 @@
-package tests;
+package ios_helpers;
 
 import org.openqa.selenium.NoSuchElementException;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import tests.BaseDriver;
 
 public class IOS_Youtube_Helper extends BaseDriver {
 	public void openVid(AppiumDriver<MobileElement> driver) throws InterruptedException {

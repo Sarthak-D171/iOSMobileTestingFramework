@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -12,6 +12,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.pagefactory.iOSBy;
+import tests.BaseDriver;
 
 public class IOS_Phone_Helper extends BaseDriver{
 	public void callNumber(String num, AppiumDriver<MobileElement> driver) throws InterruptedException {

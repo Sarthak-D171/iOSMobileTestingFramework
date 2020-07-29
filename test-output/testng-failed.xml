@@ -7,7 +7,7 @@
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="webTest1"/>
+          <include name="phoneTest1"/>
         </methods>
       </class> <!-- tests.mainTester -->
     </classes>

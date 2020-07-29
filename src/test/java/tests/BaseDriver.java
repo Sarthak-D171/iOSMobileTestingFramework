@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -29,6 +31,7 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
+	String holder = "iOS";
 	
 	/*
 	*
@@ -102,9 +105,10 @@ public class BaseDriver {
 		} else {
 			caps = new DesiredCapabilities();
 			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
-			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "OnePLus 6T");
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "OnePlus 6T");
 			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.3.4");
 			caps.setCapability(MobileCapabilityType.UDID, "329e4e63");
+			caps.setCapability(MobileCapabilityType.NO_RESET, true);
 			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		}
 		
@@ -210,12 +214,25 @@ public class BaseDriver {
 		app_bundle.put("PlayStore",new String[]{"com.android.vending", "com.google.android.finsky.activities.MainActivity"});
 		app_bundle.put("YouTube",new String[]{"com.google.android.youtube", "com.google.android.youtube.HomeActivity"});
 		app_bundle.put("SnapChat",new String[]{"com.snapchat.android", "com.snap.mushroom.MainActivity"});
+		app_bundle.put("Settings",new String[]{"com.android.settings", "com.android.settings.Settings"});
 		
 		
-		caps.setCapability("appPackage", app_bundle.get(name)[0]);
-		caps.setCapability("appActivity",app_bundle.get(name)[1]);
+		/*
+		 * 
+		 * CHROME NOTES: http://appium.io/docs/en/writing-running-appium/web/chromedriver/
+		 * npm install appium --chromedriver_version="VERSION_NUM"
+		 * WEHN STARTING SERVER: appium --chromedriver-executable /path/to/my/chromedriver
+		 */
+		if(name.equals("Chrome")) {
+			caps.setCapability(MobileCapabilityType.BROWSER_NAME, "Chrome");
+		} else {
+			caps.setCapability("appPackage", app_bundle.get(name)[0]);
+			caps.setCapability("appActivity",app_bundle.get(name)[1]);
+		}
+		//caps.setCapability(capabilityName, value);
 		URL url = new URL("http://127.0.0.1:4723/wd/hub");
 		driver = new AndroidDriver<MobileElement>(url,caps);
+		
 		return (AndroidDriver) driver;
 		
 	}
@@ -226,8 +243,12 @@ public class BaseDriver {
 	 *  Call during tests so that u exit and put an app in the background
 	 *  before opening a new app. 
 	 */
-	public void homeButton() {
+	public void iosHomeButton() {
 		driver.executeScript("mobile: pressButton", ImmutableMap.of("name","home"));
+	}
+	
+	public void androidHomeButton() {
+		((AndroidDriver) driver).pressKey(new KeyEvent(AndroidKey.HOME));
 	}
 	
 	/*
@@ -237,7 +258,8 @@ public class BaseDriver {
 	 */
 	@AfterTest
 	public void teardown() {
-		homeButton();
+		if(holder.equals("iOS")) iosHomeButton();
+		else if (holder.equals("android")) androidHomeButton();
 		//driver.closeApp();
 		//driver.quit();
 	}

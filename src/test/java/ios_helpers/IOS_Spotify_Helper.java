@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -6,6 +6,7 @@ import org.openqa.selenium.NoSuchElementException;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import tests.BaseDriver;
 
 public class IOS_Spotify_Helper extends BaseDriver{
 	public void playSong(String search, AppiumDriver<MobileElement> driver) {

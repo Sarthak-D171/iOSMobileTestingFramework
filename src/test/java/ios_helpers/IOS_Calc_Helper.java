@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import java.net.MalformedURLException;
 
@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import tests.BaseDriver;
 
 public class IOS_Calc_Helper extends BaseDriver{
 	public void typeNum(String num, AppiumDriver<MobileElement> driver) {

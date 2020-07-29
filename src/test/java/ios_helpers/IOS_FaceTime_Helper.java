@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import tests.BaseDriver;
 
 public class IOS_FaceTime_Helper extends BaseDriver{
 	public void videoCall(String num, AppiumDriver<MobileElement> driver) {

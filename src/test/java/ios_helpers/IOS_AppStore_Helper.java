@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 import org.openqa.selenium.NoSuchElementException;
 
 import io.appium.java_client.AppiumDriver;

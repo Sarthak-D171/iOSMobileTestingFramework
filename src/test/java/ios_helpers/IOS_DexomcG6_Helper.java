@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import java.util.HashMap;
 

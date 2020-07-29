@@ -1,4 +1,4 @@
-package tests;
+package ios_helpers;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import tests.BaseDriver;
 
 
 public class IOS_Safari_Helper extends BaseDriver{
