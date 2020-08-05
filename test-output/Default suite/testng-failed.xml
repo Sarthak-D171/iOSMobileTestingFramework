@@ -7,7 +7,7 @@
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="phoneTest1"/>
+          <include name="androidDexcomTest"/>
         </methods>
       </class> <!-- tests.mainTester -->
     </classes>

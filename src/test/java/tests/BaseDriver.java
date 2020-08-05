@@ -31,7 +31,7 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-	String holder = "iOS";
+	String holder = "Android";
 	
 	/*
 	*
@@ -48,7 +48,7 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "iOS"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String type = "Android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
@@ -106,9 +106,10 @@ public class BaseDriver {
 			caps = new DesiredCapabilities();
 			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
 			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "OnePlus 6T");
-			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.3.4");
-			caps.setCapability(MobileCapabilityType.UDID, "329e4e63");
+			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "9.0");
+			caps.setCapability(MobileCapabilityType.UDID, "988c1d474344434f56");
 			caps.setCapability(MobileCapabilityType.NO_RESET, true);
+			caps.setCapability(MobileCapabilityType.FULL_RESET, false);
 			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		}
 		

@@ -22,14 +22,26 @@ public class mainTester extends BaseDriver{
 	 */
 	
 	@Test
+	public void androidDexcomTest() throws MalformedURLException, InterruptedException {
+		driver = openAndroidApp("Dexcom");
+		Droid_DexcomG6_Helper y = new Droid_DexcomG6_Helper();
+		Thread.sleep(3000);
+		System.out.println(driver.getPageSource());
+		y.stopSensor(driver);
+		//System.out.println(y.getEGVVal(driver));
+		//y.navigateHome(driver);
+		
+	}
+	/*
+	@Test
 	public void androidChromeTest() throws MalformedURLException, InterruptedException {
 		driver = openAndroidApp("Chrome");
 		Droid_Chrome_Helper y = new Droid_Chrome_Helper();
 		y.gotoURL("http://google.com",driver);
 		
 	}
+	*/
 	/*
-	
 	@Test
 	public void androidPlayStore() throws MalformedURLException, InterruptedException {
 		driver = openAndroidApp("PlayStore");
@@ -37,6 +49,10 @@ public class mainTester extends BaseDriver{
 		y.downloadApp("archero",driver);
 		
 	}
+	*/
+	/*
+	
+	
 	@Test
 	public void androidYoutube() throws MalformedURLException, InterruptedException {
 		driver = openAndroidApp("YouTube");
