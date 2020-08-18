@@ -31,7 +31,7 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-	String holder = "Android";
+	String holder = "iOS";
 	
 	/*
 	*
@@ -48,7 +48,7 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "Android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String type = "iOS"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
@@ -244,6 +244,11 @@ public class BaseDriver {
 	 *  Call during tests so that u exit and put an app in the background
 	 *  before opening a new app. 
 	 */
+	public void iosScroll() {
+		HashMap<String, String> scrollObject = new HashMap<String, String>();
+		scrollObject.put("direction", "down");
+		driver.executeScript("mobile:scroll", scrollObject);
+	}
 	public void iosHomeButton() {
 		driver.executeScript("mobile: pressButton", ImmutableMap.of("name","home"));
 	}

@@ -24,7 +24,10 @@ public class IOS_Safari_Helper extends BaseDriver{
 			driver.findElement(By.name("Search")).click();
 			//System.out.println(driver.getPageSource());
 			driver.findElementByXPath("//XCUIElementTypeOther[@label='Search']").sendKeys(search);
-			driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").click();
+			if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='Search']").size()>0)
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").click();
+			else
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='search']").click();
 			//vals.submit();
 			//driver.findElement(By.name("q")).submit();
 			//System.out.println(driver.getPageSource());

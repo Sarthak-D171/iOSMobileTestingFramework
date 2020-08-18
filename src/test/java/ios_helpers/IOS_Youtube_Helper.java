@@ -7,6 +7,7 @@ import io.appium.java_client.MobileElement;
 import tests.BaseDriver;
 
 public class IOS_Youtube_Helper extends BaseDriver {
+	//unsure if this works
 	public void openVid(AppiumDriver<MobileElement> driver) throws InterruptedException {
 		try {
 			System.out.println(driver.getPageSource());

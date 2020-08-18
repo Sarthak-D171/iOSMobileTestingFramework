@@ -2,24 +2,24 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2020-08-05T10:58:57 PDT" name="Default suite" finished-at="2020-08-05T10:59:16 PDT" duration-ms="18508">
+  <suite started-at="2020-08-18T14:56:00 PDT" name="Default suite" finished-at="2020-08-18T14:56:23 PDT" duration-ms="23075">
     <groups>
     </groups>
-    <test started-at="2020-08-05T10:58:57 PDT" name="Default test" finished-at="2020-08-05T10:59:16 PDT" duration-ms="18508">
-      <class name="tests.mainTester">
-        <test-method is-config="true" signature="setup()[pri:0, instance:tests.mainTester@3b07a0d6]" started-at="2020-08-05T10:58:57 PDT" name="setup" finished-at="2020-08-05T10:58:57 PDT" duration-ms="12" status="PASS">
+    <test started-at="2020-08-18T14:56:00 PDT" name="Default test" finished-at="2020-08-18T14:56:23 PDT" duration-ms="23075">
+      <class name="tests.iosTester">
+        <test-method is-config="true" signature="setup()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-18T14:56:00 PDT" name="setup" finished-at="2020-08-18T14:56:02 PDT" duration-ms="1721" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="androidDexcomTest()[pri:0, instance:tests.mainTester@3b07a0d6]" started-at="2020-08-05T10:58:57 PDT" name="androidDexcomTest" finished-at="2020-08-05T10:59:16 PDT" duration-ms="18474" status="PASS">
+        <test-method signature="testFacebook()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-18T14:56:02 PDT" name="testFacebook" finished-at="2020-08-18T14:56:23 PDT" duration-ms="21263" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- androidDexcomTest -->
-        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.mainTester@3b07a0d6]" started-at="2020-08-05T10:59:16 PDT" name="teardown" finished-at="2020-08-05T10:59:16 PDT" duration-ms="0" status="PASS">
+        </test-method> <!-- testFacebook -->
+        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-18T14:56:23 PDT" name="teardown" finished-at="2020-08-18T14:56:23 PDT" duration-ms="71" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- teardown -->
-      </class> <!-- tests.mainTester -->
+      </class> <!-- tests.iosTester -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
