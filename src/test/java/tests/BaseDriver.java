@@ -35,7 +35,7 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-	String holder = "iOS";
+	String holder = "Android";
 	protected BufferedWriter outputLog;
 	
 	/*
@@ -53,7 +53,7 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "iOS"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String type = "Android"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
@@ -228,7 +228,7 @@ public class BaseDriver {
 
 	}
 	
-	public AndroidDriver openAndroidApp(String name) throws MalformedURLException {
+	public AndroidDriver openAndroidApp(String name) throws IOException {
 		HashMap<String,String[]> app_bundle = new HashMap<String,String[]>();
 		app_bundle.put("Dexcom",new String[]{"com.dexcom.g6", "com.dexcom.cgm.activities.AppCompatabilityActivity"});
 		app_bundle.put("Spotify",new String[]{"com.spotify.music", "com.spotify.music.MainActivity"});
@@ -254,6 +254,12 @@ public class BaseDriver {
 		//caps.setCapability(capabilityName, value);
 		URL url = new URL("http://127.0.0.1:4723/wd/hub");
 		driver = new AndroidDriver<MobileElement>(url,caps);
+		
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		outputLog.write(dtf.format(now)+" Opened: "+ name);
+		outputLog.newLine();
 		
 		return (AndroidDriver) driver;
 		

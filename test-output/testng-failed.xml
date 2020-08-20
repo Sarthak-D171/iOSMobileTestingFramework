@@ -3,13 +3,19 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="tests.iosTester">
+      <class name="tests.droidTester">
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="settings1"/>
+          <include name="androidDexcomTest"/>
+          <include name="androidLogs"/>
+          <include name="androidPlayStore"/>
+          <include name="androidSpotiy"/>
+          <include name="androidFacebook"/>
+          <include name="androidYoutube"/>
+          <include name="androidSettingsTest"/>
         </methods>
-      </class> <!-- tests.iosTester -->
+      </class> <!-- tests.droidTester -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
