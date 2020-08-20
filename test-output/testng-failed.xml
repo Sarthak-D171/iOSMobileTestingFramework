@@ -7,7 +7,7 @@
         <methods>
           <include name="teardown"/>
           <include name="setup"/>
-          <include name="snapTest"/>
+          <include name="settings1"/>
         </methods>
       </class> <!-- tests.iosTester -->
     </classes>

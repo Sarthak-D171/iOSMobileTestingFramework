@@ -1,6 +1,10 @@
 package ios_helpers;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -15,9 +19,9 @@ import tests.BaseDriver;
 
 
 public class IOS_Safari_Helper extends BaseDriver{
-	public void googleSearch(String search, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void googleSearch(String search, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
-			goToURL("https://google.com",driver);
+			goToURL("https://google.com",driver, outputLog);
 			driver.getContextHandles();
 			String currentContext = driver.getContext();
 			driver.context("NATIVE_APP");
@@ -28,10 +32,18 @@ public class IOS_Safari_Helper extends BaseDriver{
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").click();
 			else
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='search']").click();
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Completed Google Search");
+			outputLog.newLine();
 			//vals.submit();
 			//driver.findElement(By.name("q")).submit();
 			//System.out.println(driver.getPageSource());
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
@@ -52,11 +64,19 @@ public class IOS_Safari_Helper extends BaseDriver{
 		//System.out.println(driver.getPageSource());
 	}
 	*/
-	public void goToURL(String url, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void goToURL(String url, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
 			driver.get(url);
 			Thread.sleep(4000);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Went to URL");
+			outputLog.newLine();
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}

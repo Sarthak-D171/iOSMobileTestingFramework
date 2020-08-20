@@ -1,11 +1,17 @@
 package ios_helpers;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.openqa.selenium.NoSuchElementException;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 
 public class IOS_AppStore_Helper {
-	public void downloadApp(String appName, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void downloadApp(String appName, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
 			driver.findElementByXPath("//XCUIElementTypeTabBar/XCUIElementTypeButton[@label='Search']").click();
 			driver.findElementByXPath("//XCUIElementTypeSearchField").sendKeys(appName);
@@ -41,7 +47,15 @@ public class IOS_AppStore_Helper {
 				Thread.sleep(3000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Install']").click();
 			}
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Downloaded: "+appName);
+			outputLog.newLine();
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 		//driver.findElementByXPath("//XCUIElementTypeTextField[@label='To:']").sendKeys(number);

@@ -1,6 +1,10 @@
 package ios_helpers;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -15,7 +19,7 @@ import io.appium.java_client.pagefactory.iOSBy;
 import tests.BaseDriver;
 
 public class IOS_Phone_Helper extends BaseDriver{
-	public void callNumber(String num, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void callNumber(String num, AppiumDriver<MobileElement> driver,BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Keypad']").click();
 			//System.out.println(driver.getPageSource());
@@ -24,14 +28,22 @@ public class IOS_Phone_Helper extends BaseDriver{
 			}
 			//System.out.println(driver.getPageSource());
 			driver.findElement(By.name("Call")).click();
-			disconnectCall(driver);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Started Call");
+			outputLog.newLine();
+			disconnectCall(driver, outputLog);
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 		
 		//driver.findElement(By.id("End Call")).click();
 	}
-	public void callContact(String name,AppiumDriver<MobileElement> driver) {
+	public void callContact(String name,AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		try { 
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Contacts']").click();
 			driver.findElement(By.name(name)).click();
@@ -41,13 +53,21 @@ public class IOS_Phone_Helper extends BaseDriver{
 			if(home) driver.findElement(By.name("home, Call")).click();
 			boolean work = driver.findElements(By.name("work, Call")).size() > 0;
 			if(work) driver.findElement(By.name("work, Call")).click();
-			disconnectCall(driver);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Started Call");
+			outputLog.newLine();
+			disconnectCall(driver, outputLog);
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 		
 	}
-	public boolean disconnectCall(AppiumDriver<MobileElement> driver) {
+	public boolean disconnectCall(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		try {
 			boolean isCalling = false;
 			List<MobileElement> ele = driver.findElementsByXPath("//XCUIElementTypeButton");
@@ -58,8 +78,16 @@ public class IOS_Phone_Helper extends BaseDriver{
 					break;
 				}
 			}
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Disconnected Call");
+			outputLog.newLine();
 			return isCalling;
 		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
 			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 			return false;
 		}

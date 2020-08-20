@@ -1,10 +1,14 @@
 package tests;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +36,7 @@ public class BaseDriver {
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
 	String holder = "iOS";
+	protected BufferedWriter outputLog;
 	
 	/*
 	*
@@ -52,6 +57,7 @@ public class BaseDriver {
 		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
 		String versionName = "";
 		String udidName = "";
+		outputLog = new BufferedWriter(new FileWriter("Test_OutPut_Log"));
 		if(type.equals("iOS")) {
 			Process device_process = Runtime.getRuntime().exec("instruments -s devices");
 			StringBuilder device_output = new StringBuilder();
@@ -103,15 +109,21 @@ public class BaseDriver {
 				caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 			}
 		} else {
+			deviceName = "Samsung S8";
+			udidName = "988c1d474344434f56";
 			caps = new DesiredCapabilities();
 			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
-			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "OnePlus 6T");
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, "Samsung S8");
 			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "9.0");
 			caps.setCapability(MobileCapabilityType.UDID, "988c1d474344434f56");
 			caps.setCapability(MobileCapabilityType.NO_RESET, true);
 			caps.setCapability(MobileCapabilityType.FULL_RESET, false);
 			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		}
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();  
+		outputLog.write(dtf.format(now)+ " Connected to: "+deviceName+" "+udidName);
+		outputLog.newLine();
 		
 	}
 	
@@ -126,7 +138,7 @@ public class BaseDriver {
 	 * 
 	 * 
 	 */
-	public IOSDriver openNativeApp(String key) throws MalformedURLException {
+	public IOSDriver openNativeApp(String key) throws IOException {
 		HashMap<String,String> app_bundle = new HashMap<String,String>();
 		app_bundle.put("Activity", "com.apple.Fitness");
 		app_bundle.put("App Store", "com.apple.AppStore");
@@ -183,6 +195,10 @@ public class BaseDriver {
         
         URL url = new URL("http://127.0.0.1:4723/wd/hub");
 		driver = new IOSDriver(url,caps); 
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		outputLog.write(dtf.format(now)+" Launched: "+key);
+		outputLog.newLine();
 		return (IOSDriver) driver;
 
         //driver.executeScript("mobile: launchApp", args);
@@ -196,7 +212,7 @@ public class BaseDriver {
 	 * The following link can be used to get the bundleID of any IOS APP installed on the test device.
 	 * https://stackoverflow.com/questions/27509838/how-to-get-bundle-id-of-ios-app-either-using-ipa-file-or-app-installed-on-iph
 	 */
-	public IOSDriver openBundleID(String key) throws MalformedURLException {
+	public IOSDriver openBundleID(String key) throws IOException {
 		HashMap<String, Object> args = new HashMap<String,Object>();
 
         args.put("bundleId", key);
@@ -204,6 +220,10 @@ public class BaseDriver {
         URL url = new URL("http://127.0.0.1:4723/wd/hub");
 		driver = new IOSDriver(url,caps); 
 		driver.executeScript("mobile: launchApp", args);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		outputLog.write(dtf.format(now)+" Launched: "+ key);
+		outputLog.newLine();
 		return (IOSDriver) driver;
 
 	}
@@ -216,6 +236,7 @@ public class BaseDriver {
 		app_bundle.put("YouTube",new String[]{"com.google.android.youtube", "com.google.android.youtube.HomeActivity"});
 		app_bundle.put("SnapChat",new String[]{"com.snapchat.android", "com.snap.mushroom.MainActivity"});
 		app_bundle.put("Settings",new String[]{"com.android.settings", "com.android.settings.Settings"});
+		app_bundle.put("Facebook", new String[]{"com.facebook.katana", "com.facebook.katana.LoginActivity"});
 		
 		
 		/*
@@ -263,9 +284,10 @@ public class BaseDriver {
 	 * Currently allows you to chain tests. Modify later according to needs.
 	 */
 	@AfterTest
-	public void teardown() {
+	public void teardown() throws IOException {
 		if(holder.equals("iOS")) iosHomeButton();
 		else if (holder.equals("android")) androidHomeButton();
+		outputLog.close();
 		//driver.closeApp();
 		//driver.quit();
 	}

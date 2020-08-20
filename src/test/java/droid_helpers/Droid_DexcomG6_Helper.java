@@ -1,6 +1,8 @@
 package droid_helpers;
 
 import org.openqa.selenium.By;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;    
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
@@ -17,6 +19,9 @@ public class Droid_DexcomG6_Helper {
 			//WebElement egv = driver.findElement(By.id("com.dexcom.g6:id/textViewEGV"));
 			WebElement egv = driver.findElementByXPath("//android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.TextView[@index='1']");
 			String ret = egv.getAttribute("text");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();  
+			System.out.println(dtf.format(now)); 
 			return ret;
 		} else {
 			identifyError(driver);

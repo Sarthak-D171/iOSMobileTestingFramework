@@ -2,6 +2,11 @@ package ios_helpers;
 
 import java.util.HashMap;
 
+import java.time.format.DateTimeFormatter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;    
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -22,20 +27,24 @@ public class IOS_DexomcG6_Helper {
 	}
 	
 	// PRINT EGV VALUE FOR N MINS AND PRINT ANY ALERTS
-	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver) throws InterruptedException {
-		identifyError(driver);
+	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		identifyError(driver, outputLog);
 		long finish = System.currentTimeMillis() + mins*60*1000; // end time
 		while (sessionActive(driver) && System.currentTimeMillis() < finish) {
-			alertHandler(driver);
-			int val = getEGVVal(driver);
+			alertHandler(driver, outputLog);
+			int val = getEGVVal(driver, outputLog);
 			System.out.println(val);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Reading EGV Value as: "+ val);
+			outputLog.newLine();
 			Thread.sleep(30000); //30 sec
 		}	
 	}
 	
 	// UNTESTED
 	// Connects to a new Transmitter. Should only be possible if session inactive?
-	public void connectnewTransmitter(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void connectnewTransmitter(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		navigateHome(driver);
 		driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
 		driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Transmitter']").click();
@@ -56,10 +65,15 @@ public class IOS_DexomcG6_Helper {
 		Thread.sleep(10000);
 		driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
 		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		outputLog.write(dtf.format(now)+" Connected New Transmitter");
+		outputLog.newLine();
+		
 	}
 	
 	// Starts a new Sensor Session if sensor is currently inactive. 
-	public void startSensorSession(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		navigateHome(driver);
 		if(sessionInactive(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='New Sensor']").click();
@@ -76,12 +90,17 @@ public class IOS_DexomcG6_Helper {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
 			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Started New Sensor Session");
+			outputLog.newLine();
 
 		}
 	}
 	
 	// Gets an EGV Value one time. IF we have an error obstructing getting an EGV Value, prints that error
-	public int getEGVVal(AppiumDriver<MobileElement> driver) {
+	public int getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
 			if(driver.findElementsByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther").size()>0) {
@@ -91,13 +110,13 @@ public class IOS_DexomcG6_Helper {
 				return Integer.valueOf(val);
 			}
 		}
-		identifyError(driver);
+		identifyError(driver, outputLog);
 		return -1;
 	}
 	
 	
 	// Ends a Sensor Session. Requires that a session is not inactive.
-	public void endSensorSession(AppiumDriver<MobileElement> driver) {
+	public void endSensorSession(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		navigateHome(driver);
 		if(!sessionInactive(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
@@ -111,27 +130,52 @@ public class IOS_DexomcG6_Helper {
 			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Stop Sensor']").click();
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Stop Sensor']").click();
 			System.out.println(driver.getPageSource());
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Ended Sensor Session");
+			outputLog.newLine();
 		}
 	}
 	
 	
 	// Function that checks for all errors and prints out what error 
 	// we got if there is an error. Should check every loop.
-	public boolean identifyError(AppiumDriver<MobileElement> driver) {
+	public boolean identifyError(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		if(sessionActive(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" No Error");
+			outputLog.newLine();
 			System.out.println("No Error");
 			return false;
 		}
 		else if(sensorError(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor Error");
+			outputLog.newLine();
 			System.out.println("Sensor Error");
 		}
 		else if(bluetoothError(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Bluetooth Error");
+			outputLog.newLine();
 			System.out.println("Bluetooth Error");
 		}
 		else if(signalLoss(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Signal Loss");
+			outputLog.newLine();
 			System.out.println("Signal Loss");
 		}
 		else if(sessionEnded(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Session Ended");
+			outputLog.newLine();
 			System.out.println("Session Ended");
 		}
 		return true;
@@ -200,31 +244,55 @@ public class IOS_DexomcG6_Helper {
 	 */
 	
 	// COMPLETE (add alerts as necessary)
-	public boolean alertHandler(AppiumDriver<MobileElement> driver) {
+	public boolean alertHandler(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		boolean validAlert = false;
 		if(warmupAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Got Warmup Alert");
+			outputLog.newLine();
 			System.out.println("Got Warmup Alert");
 			validAlert = true;
 		}
 		if(lowAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Got Low Alert");
+			outputLog.newLine();
 			System.out.println("Got Low Alert");
 			validAlert = true;
 		}
 		if(highAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Got High Alert");
+			outputLog.newLine();
 			System.out.println("Got High Alert");
 			validAlert = true;
 		}
 		if(noReadingAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Got No Reading Alert");
+			outputLog.newLine();
 			System.out.println("Got No Reading Alert");
 			validAlert = true;
 		}
 		if(bluetoothPairingAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Got Bluetooth Pairing Alert");
+			outputLog.newLine();
 			System.out.println("Bluetooth Pairing");
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Pair']").click();
 			return true;
 		}
 		if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='OK']").size()>0) {
 			if(!validAlert) {
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Got Unidentified Alert");
+				outputLog.newLine();
 				System.out.println("Unidentified Alert");
 			}
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='OK']").click();
