@@ -1,7 +1,9 @@
 package droid_helpers;
 
 import org.openqa.selenium.By;
-import java.time.format.DateTimeFormatter;  
+import java.time.format.DateTimeFormatter;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;    
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -13,7 +15,7 @@ import io.appium.java_client.android.AndroidDriver;
 
 public class Droid_DexcomG6_Helper {
 	
-	public String getEGVVal(AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public String getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
 			//WebElement egv = driver.findElement(By.id("com.dexcom.g6:id/textViewEGV"));
@@ -24,60 +26,100 @@ public class Droid_DexcomG6_Helper {
 			System.out.println(dtf.format(now)); 
 			return ret;
 		} else {
-			identifyError(driver);
+			identifyError(driver,outputLog);
 			return "Failed";
 		}
 	}
 
-	public void stopSensor(AppiumDriver<MobileElement> driver) throws InterruptedException {
-		navigateHome(driver);
-		if(!sessionInactive(driver)) {
-			driver.findElementByXPath("//android.widget.TextView[@text='SETTINGS']").click();
-			((AndroidDriver) driver).findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+"Stop Sensor"+"\").instance(0))").click();
-			driver.findElementByXPath("//android.widget.Button[@text='STOP SENSOR']").click();
-			if(driver.findElementsByXPath("//android.widget.Button[@text='OK']").size() >0) {
-				driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
+	public void stopSensor(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		try {
+			navigateHome(driver);
+			if(!sessionInactive(driver)) {
+				driver.findElementByXPath("//android.widget.TextView[@text='SETTINGS']").click();
+				((AndroidDriver) driver).findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+"Stop Sensor"+"\").instance(0))").click();
+				driver.findElementByXPath("//android.widget.Button[@text='STOP SENSOR']").click();
+				if(driver.findElementsByXPath("//android.widget.Button[@text='OK']").size() >0) {
+					driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
+				}
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Stopped Sensor");
+				outputLog.newLine();
 			}
 			
+		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
-	public void startSensorSession(String code, AppiumDriver<MobileElement> driver) throws InterruptedException {
-		navigateHome(driver);
-		if(sessionInactive(driver)) {
-			driver.findElementByXPath("//android.widget.TextView[@text='New Sensor']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.Button[@text='ENTER CODE']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.Button[@text='ENTER MANUALLY']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.EditText").sendKeys(code);
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.TextView[@text='SAVE']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.Button[@text='CONFIRM']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.Button[@text='NEXT']").click();
-			Thread.sleep(3000);
-			driver.findElementByXPath("//android.widget.TextView[@text='Start Sensor']").click();
-			
+	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		try {
+			navigateHome(driver);
+			if(sessionInactive(driver)) {
+				driver.findElementByXPath("//android.widget.TextView[@text='New Sensor']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.Button[@text='ENTER CODE']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.Button[@text='ENTER MANUALLY']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.EditText").sendKeys(code);
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.TextView[@text='SAVE']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.Button[@text='CONFIRM']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.Button[@text='NEXT']").click();
+				Thread.sleep(3000);
+				driver.findElementByXPath("//android.widget.TextView[@text='Start Sensor']").click();
+				
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Started Sensor Session");
+				outputLog.newLine();
+			}
+		}	catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
 	
 	
-	public boolean identifyError(AppiumDriver<MobileElement> driver) throws InterruptedException {
+	public boolean identifyError(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		if(bluetoothError(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" BlueTooth Error");
+			outputLog.newLine();
 			System.out.println("Bluetooth Error");
 			return true;
 		}
 		else if(signalLoss(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Signal Loss");
+			outputLog.newLine();
 			System.out.println("Signal Loss");
 			return true;
 		}
 		else if(sensorError(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor Error");
+			outputLog.newLine();
 			System.out.println("Sensor Error");
 			return true;
 		}
 		else if(sessionEnded(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Session Ended");
+			outputLog.newLine();
 			System.out.println("Session Ended");
 			return true;
 		}
@@ -117,32 +159,57 @@ public class Droid_DexcomG6_Helper {
 	
 	
 	//resource-id="android:id/alertTitle" potential way to find alerts ??
-	public boolean alertHandler(AppiumDriver<MobileElement> driver) {
+	public boolean alertHandler(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		if(sensorWarmupAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor Warmup Alert");
+			outputLog.newLine();
+			System.out.println("Sensor Warmup");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;
 		}
 		if(urgentLowAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor Urgent Low Alert");
+			outputLog.newLine();
 			System.out.println("Urgent Low");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;
 		}
 		if(urgentLowSoonAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Urgent Low Soon Alert");
+			outputLog.newLine();
 			System.out.println("Urgent Low Soon");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;
 		}
 		if(lowAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor Low Alert");
+			outputLog.newLine();
 			System.out.println("Low");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;
 		}
 		if(highAlert(driver)) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Sensor High Alert");
+			outputLog.newLine();
 			System.out.println("High");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;
 		}
 		if(driver.findElements(By.id("android:id/alertTitle")).size() >0) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Unspecified Alert");
+			outputLog.newLine();
 			System.out.println("Unspecififed");
 			driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 			return true;

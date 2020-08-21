@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -28,55 +29,41 @@ public class IOS_DexomcG6_Helper {
 	
 	// PRINT EGV VALUE FOR N MINS AND PRINT ANY ALERTS
 	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
-		identifyError(driver, outputLog);
-		long finish = System.currentTimeMillis() + mins*60*1000; // end time
-		while (sessionActive(driver) && System.currentTimeMillis() < finish) {
-			alertHandler(driver, outputLog);
-			int val = getEGVVal(driver, outputLog);
-			System.out.println(val);
+		try {
+			identifyError(driver, outputLog);
+			long finish = System.currentTimeMillis() + mins*60*1000; // end time
+			while (sessionActive(driver) && System.currentTimeMillis() < finish) {
+				alertHandler(driver, outputLog);
+				int val = getEGVVal(driver, outputLog);
+				System.out.println(val);
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Reading EGV Value as: "+ val);
+				outputLog.newLine();
+				Thread.sleep(30000); //30 sec
+			}
+		}
+		catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
-			outputLog.write(dtf.format(now)+" Reading EGV Value as: "+ val);
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
 			outputLog.newLine();
-			Thread.sleep(30000); //30 sec
-		}	
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
+		}
 	}
 	
 	// UNTESTED
 	// Connects to a new Transmitter. Should only be possible if session inactive?
 	public void connectnewTransmitter(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
-		navigateHome(driver);
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
-		driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Transmitter']").click();
-		driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Pair New']").click();
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
-		driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(code);
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
-		System.out.println(driver.getPageSource());
-		for(int i =0;i<code.length();i++) {
-			driver.findElement(By.name(String.valueOf(code.charAt(i)))).click();
-		}
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
-		System.out.println(driver.getPageSource());
-		Thread.sleep(10000);
-		driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-		LocalDateTime now = LocalDateTime.now();
-		outputLog.write(dtf.format(now)+" Connected New Transmitter");
-		outputLog.newLine();
-		
-	}
-	
-	// Starts a new Sensor Session if sensor is currently inactive. 
-	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
-		navigateHome(driver);
-		if(sessionInactive(driver)) {
-			driver.findElementByXPath("//XCUIElementTypeButton[@label='New Sensor']").click();
+		try {
+			navigateHome(driver);
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
+			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Transmitter']").click();
+			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Pair New']").click();
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+			driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(code);
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
 			System.out.println(driver.getPageSource());
@@ -88,14 +75,52 @@ public class IOS_DexomcG6_Helper {
 			System.out.println(driver.getPageSource());
 			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
-			Thread.sleep(10000);
-			driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
-			outputLog.write(dtf.format(now)+" Started New Sensor Session");
+			outputLog.write(dtf.format(now)+" Connected New Transmitter");
 			outputLog.newLine();
-
+		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
+		}
+		
+	}
+	
+	// Starts a new Sensor Session if sensor is currently inactive. 
+	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		try {
+			navigateHome(driver);
+			if(sessionInactive(driver)) {
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='New Sensor']").click();
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+				System.out.println(driver.getPageSource());
+				for(int i =0;i<code.length();i++) {
+					driver.findElement(By.name(String.valueOf(code.charAt(i)))).click();
+				}
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
+				System.out.println(driver.getPageSource());
+				Thread.sleep(10000);
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
+				Thread.sleep(10000);
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
+				
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Started New Sensor Session");
+				outputLog.newLine();
+			}
+		} catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
 	
@@ -117,24 +142,32 @@ public class IOS_DexomcG6_Helper {
 	
 	// Ends a Sensor Session. Requires that a session is not inactive.
 	public void endSensorSession(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
-		navigateHome(driver);
-		if(!sessionInactive(driver)) {
-			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
-			RemoteWebElement sens = driver.findElementByXPath("//XCUIElementTypeTable");
-			String parentID = sens.getId();
-			HashMap<String, String> scrollObject = new HashMap<String, String>();
-			scrollObject.put("element", parentID);
-			//scrollObject.put("direction", "down");
-			scrollObject.put("predicateString", "label == 'Stop Sensor'");
-			driver.executeScript("mobile:scroll", scrollObject);
-			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Stop Sensor']").click();
-			driver.findElementByXPath("//XCUIElementTypeButton[@label='Stop Sensor']").click();
-			System.out.println(driver.getPageSource());
-			
+		try {
+			navigateHome(driver);
+			if(!sessionInactive(driver)) {
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
+				RemoteWebElement sens = driver.findElementByXPath("//XCUIElementTypeTable");
+				String parentID = sens.getId();
+				HashMap<String, String> scrollObject = new HashMap<String, String>();
+				scrollObject.put("element", parentID);
+				//scrollObject.put("direction", "down");
+				scrollObject.put("predicateString", "label == 'Stop Sensor'");
+				driver.executeScript("mobile:scroll", scrollObject);
+				driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Stop Sensor']").click();
+				driver.findElementByXPath("//XCUIElementTypeButton[@label='Stop Sensor']").click();
+				System.out.println(driver.getPageSource());
+				
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Ended Sensor Session");
+				outputLog.newLine();
+			}
+		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
-			outputLog.write(dtf.format(now)+" Ended Sensor Session");
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
 			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
 	
@@ -143,10 +176,6 @@ public class IOS_DexomcG6_Helper {
 	// we got if there is an error. Should check every loop.
 	public boolean identifyError(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		if(sessionActive(driver)) {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-			LocalDateTime now = LocalDateTime.now();
-			outputLog.write(dtf.format(now)+" No Error");
-			outputLog.newLine();
 			System.out.println("No Error");
 			return false;
 		}
