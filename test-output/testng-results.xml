@@ -2,24 +2,24 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2020-08-20T14:59:08 PDT" name="Default suite" finished-at="2020-08-20T14:59:26 PDT" duration-ms="18057">
+  <suite started-at="2020-08-25T14:32:19 PDT" name="Default suite" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1648655">
     <groups>
     </groups>
-    <test started-at="2020-08-20T14:59:08 PDT" name="Default test" finished-at="2020-08-20T14:59:26 PDT" duration-ms="18057">
-      <class name="tests.droidTester">
-        <test-method is-config="true" signature="setup()[pri:0, instance:tests.droidTester@11a9e7c8]" started-at="2020-08-20T14:59:08 PDT" name="setup" finished-at="2020-08-20T14:59:08 PDT" duration-ms="23" status="PASS">
+    <test started-at="2020-08-25T14:32:19 PDT" name="Default test" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1648655">
+      <class name="tests.iosTester">
+        <test-method is-config="true" signature="setup()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:32:19 PDT" name="setup" finished-at="2020-08-25T14:32:21 PDT" duration-ms="1855" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="androidLogs()[pri:0, instance:tests.droidTester@11a9e7c8]" started-at="2020-08-20T14:59:08 PDT" name="androidLogs" finished-at="2020-08-20T14:59:26 PDT" duration-ms="18015" status="PASS">
+        <test-method signature="finalDemoTest()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:32:21 PDT" name="finalDemoTest" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1646751" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- androidLogs -->
-        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.droidTester@11a9e7c8]" started-at="2020-08-20T14:59:26 PDT" name="teardown" finished-at="2020-08-20T14:59:26 PDT" duration-ms="1" status="PASS">
+        </test-method> <!-- finalDemoTest -->
+        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:59:47 PDT" name="teardown" finished-at="2020-08-25T14:59:47 PDT" duration-ms="27" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- teardown -->
-      </class> <!-- tests.droidTester -->
+      </class> <!-- tests.iosTester -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
