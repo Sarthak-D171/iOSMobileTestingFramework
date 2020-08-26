@@ -15,6 +15,30 @@ import io.appium.java_client.android.AndroidDriver;
 
 public class Droid_DexcomG6_Helper {
 	
+	public void getEGVValNMins(int mins, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		try {
+			identifyError(driver, outputLog);
+			long finish = System.currentTimeMillis() + mins*60*1000; // end time
+			while (sessionActive(driver) && System.currentTimeMillis() < finish) {
+				alertHandler(driver, outputLog);
+				String val = getEGVVal(driver, outputLog);
+				System.out.println(val);
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				outputLog.write(dtf.format(now)+" Reading EGV Value as: "+ val);
+				outputLog.newLine();
+				Thread.sleep(30000); //30 sec
+			}
+		}
+		catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
+		}
+	}
+	
 	public String getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
@@ -28,6 +52,56 @@ public class Droid_DexcomG6_Helper {
 		} else {
 			identifyError(driver,outputLog);
 			return "Failed";
+		}
+	}
+	
+	public void connectNewTransmitter(String transcode, String sensorcode, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		try {
+			navigateHome(driver);
+			
+			driver.findElementByXPath("//android.widget.TextView[@text='SETTINGS']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.TextView[@text='Transmitter']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.TextView[@text='Pair New']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='ENTER MANUALLY']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.EditText").sendKeys(transcode);
+			driver.findElementByXPath("//android.widget.TextView[@text='SAVE']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='CONFIRM']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='ENTER CODE']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='ENTER MANUALLY']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.EditText").sendKeys(sensorcode);
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.TextView[@text='SAVE']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='CONFIRM']").click();
+			Thread.sleep(3000);
+			driver.findElementByXPath("//android.widget.Button[@text='NEXT']").click();
+			Thread.sleep(3000);
+			
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Connected New Transmitter");
+			outputLog.newLine();
+			
+			while(connectingTransmitter(driver)) {
+				Thread.sleep(10000);
+			}
+			
+			driver.findElementByXPath("//android.widget.TextView[@text='Start Sensor']").click();
+		}	catch(NoSuchElementException e) {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			outputLog.write(dtf.format(now)+" Invalid Locator, Double check the Seleneium Selectors");
+			outputLog.newLine();
+			System.out.println("Invalid Locator, Double check the Seleneium Selectors");
 		}
 	}
 
@@ -148,11 +222,15 @@ public class Droid_DexcomG6_Helper {
 	}
 	public boolean sessionActive(AppiumDriver<MobileElement> driver) throws InterruptedException {
 		navigateHome(driver);
-		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver) && !sessionEnded(driver);
+		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver) && !sessionEnded(driver) && !connectingTransmitter(driver);
 	}
 	public boolean warmingUp(AppiumDriver<MobileElement> driver) throws InterruptedException {
 		navigateHome(driver);
 		return driver.findElementsByXPath("//android.widget.TextView[@text='Sensor Warmup']").size() >0;
+	}
+	public boolean connectingTransmitter(AppiumDriver<MobileElement> driver) throws InterruptedException {
+		navigateHome(driver);
+		return driver.findElementsByXPath("//android.widget.TextView[@text='Connecting with Transmitter']").size() >0; 
 	}
 	
 	

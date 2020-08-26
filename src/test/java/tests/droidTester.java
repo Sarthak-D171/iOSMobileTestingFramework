@@ -78,7 +78,7 @@ public class droidTester extends BaseDriver{
 		//y.playSong("telegraph ave childish",driver);	
 	}
 	*/
-	
+	/*
 	@Test
 	public void androidLogs() throws InterruptedException, IOException {
 		driver = openAndroidApp("Settings");
@@ -87,6 +87,16 @@ public class droidTester extends BaseDriver{
 		y.bluetoothOnSamsung(driver, outputLog);
 		y.toggleBluetoothSamsung(driver,outputLog);
 		//Process device_process = Runtime.getRuntime().exec("adb bugreport anewbugreportfolder");
+	}*/
+	@Test
+	public void androidDexcomTest() throws InterruptedException, IOException {
+		driver = openAndroidApp("Dexcom");
+		Droid_DexcomG6_Helper y = new Droid_DexcomG6_Helper();
+		Thread.sleep(3000);
+		System.out.println(driver.getPageSource());
+		//y.connectNewTransmitter("8HM084","7171", driver, outputLog);
+		//System.out.println(y.getEGVVal(driver));
+		//y.navigateHome(driver);
 	}
 	
 }

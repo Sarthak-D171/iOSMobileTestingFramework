@@ -2,12 +2,15 @@ package tests;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.testng.annotations.Test;
 
 import ios_helpers.*;
 
 public class iosTester extends BaseDriver{
+	/*
 	@Test
 	public void settings1() throws InterruptedException, IOException {
 		driver = openNativeApp("Settings");
@@ -259,5 +262,49 @@ public class iosTester extends BaseDriver{
 		d.getEGV_N_Mins(10, driver, outputLog);
 	
 	}
+	*/
+	
+	@Test
+	public void finalDemoTest() throws InterruptedException, IOException {
+		IOS_DexomcG6_Helper d = new IOS_DexomcG6_Helper();
+		do {
+			driver = openBundleID("com.dexcominc.G6");
+			d.getEGV_N_Mins(1,driver,outputLog);
+			iosHomeButton();
+			
+			
+			driver = openNativeApp("Weather");
+			long finish = System.currentTimeMillis() + 1*60*1000;
+			while(System.currentTimeMillis() < finish) {
+				iosScroll("down");
+				iosScroll("up");
+			}
+			iosHomeButton();
+			
+			IOS_Youtube_Helper y = new IOS_Youtube_Helper();
+			driver = openBundleID("com.google.ios.youtube");
+			y.openplayVid(5, driver, outputLog);
+			iosHomeButton();
+			
+			IOS_AppStore_Helper a = new IOS_AppStore_Helper();
+			driver = openNativeApp("App Store");
+			a.downloadApp("vainglory",driver,outputLog);
+			iosHomeButton();
+			
+			IOS_Snapchat_Helper s = new IOS_Snapchat_Helper();
+			driver = openBundleID("com.toyopagroup.picaboo");
+			finish = System.currentTimeMillis() + 3*60*1000;
+			while(System.currentTimeMillis() < finish) {
+				s.sendSnap(driver, outputLog);
+				s.openSnap(driver, outputLog);
+			}
+			iosHomeButton();
+			
+			driver = openBundleID("com.dexcominc.G6");
+			d.getEGV_N_Mins(15,driver,outputLog);
+		} while(false && d.sessionActive(driver));
+		
+	}
+	
 	
 }

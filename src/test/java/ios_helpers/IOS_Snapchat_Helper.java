@@ -16,7 +16,8 @@ import tests.BaseDriver;
 public class IOS_Snapchat_Helper extends BaseDriver {
 	public void sendSnap(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		try {
-			driver.findElement(By.name("take_a_snap")).click();
+			while(driver.findElements(By.name("take_a_snap")).size()>0)
+				driver.findElement(By.name("take_a_snap")).click();
 			System.out.println(driver.getPageSource());
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='send_to_button']").click();
 			System.out.println(driver.getPageSource());

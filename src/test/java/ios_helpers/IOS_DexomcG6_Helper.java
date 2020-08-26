@@ -1,7 +1,7 @@
 package ios_helpers;
 
 import java.util.HashMap;
-
+import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class IOS_DexomcG6_Helper {
 			long finish = System.currentTimeMillis() + mins*60*1000; // end time
 			while (sessionActive(driver) && System.currentTimeMillis() < finish) {
 				alertHandler(driver, outputLog);
-				int val = getEGVVal(driver, outputLog);
+				String val = getEGVVal(driver, outputLog);
 				System.out.println(val);
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 				LocalDateTime now = LocalDateTime.now();
@@ -54,27 +54,41 @@ public class IOS_DexomcG6_Helper {
 	
 	// UNTESTED
 	// Connects to a new Transmitter. Should only be possible if session inactive?
-	public void connectnewTransmitter(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+	public void connectNewTransmitter(String transcode, String sensorcode, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
 			navigateHome(driver);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Transmitter']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Pair New']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
-			driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(code);
+			Thread.sleep(1000);
+			driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(transcode);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
+			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+			Thread.sleep(1000);
 			System.out.println(driver.getPageSource());
-			for(int i =0;i<code.length();i++) {
-				driver.findElement(By.name(String.valueOf(code.charAt(i)))).click();
+			for(int i =0;i<sensorcode.length();i++) {
+				driver.findElement(By.name(String.valueOf(sensorcode.charAt(i)))).click();
 			}
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
-			System.out.println(driver.getPageSource());
 			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
+			System.out.println(driver.getPageSource());
+			while(connectingTransmitter(driver)) {
+				Thread.sleep(10000);
+			}
+			driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
@@ -110,6 +124,8 @@ public class IOS_DexomcG6_Helper {
 				Thread.sleep(10000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
 				
+				
+				
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 				LocalDateTime now = LocalDateTime.now();
 				outputLog.write(dtf.format(now)+" Started New Sensor Session");
@@ -125,18 +141,18 @@ public class IOS_DexomcG6_Helper {
 	}
 	
 	// Gets an EGV Value one time. IF we have an error obstructing getting an EGV Value, prints that error
-	public int getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+	public String getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
 		navigateHome(driver);
 		if(sessionActive(driver)) {
 			if(driver.findElementsByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther").size()>0) {
 				WebElement egv = driver.findElementByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther");
 				String s = egv.getAttribute("name");
 				String val = s.split("\\s+")[0];
-				return Integer.valueOf(val);
+				return val;
 			}
 		}
 		identifyError(driver, outputLog);
-		return -1;
+		return "Failed";
 	}
 	
 	
@@ -229,7 +245,7 @@ public class IOS_DexomcG6_Helper {
 	// COMPLETE
 	public boolean sessionActive(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
-		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver) && !sessionEnded(driver);
+		return !sessionInactive(driver) && !warmingUp(driver) && !sensorError(driver) && !bluetoothError(driver) && !signalLoss(driver) && !sessionEnded(driver) && !connectingTransmitter(driver);
 	}
 	// COMPLETE
 	public boolean sessionEnded(AppiumDriver<MobileElement> driver) {
@@ -245,6 +261,17 @@ public class IOS_DexomcG6_Helper {
 	public boolean bluetoothError(AppiumDriver<MobileElement> driver) {
 		navigateHome(driver);
 		return driver.findElementsByXPath("//XCUIElementTypeStaticText[@label='Bluetooth Off']").size()>0;
+	}
+	public boolean connectingTransmitter(AppiumDriver<MobileElement> driver) {
+		navigateHome(driver);
+		List<MobileElement> m = driver.findElementsByXPath("//XCUIElementTypeStaticText");
+		for(MobileElement ele : m) {
+			String s = ele.getAttribute("label");
+			if(s!= null && s.contains("Connecting with")) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// COMPLETE
@@ -373,7 +400,7 @@ public class IOS_DexomcG6_Helper {
 	}
 	// COMPLETE
 	public void navigateHome(AppiumDriver<MobileElement> driver) {
-		//System.out.println(isHome(driver));
+		System.out.println(isHome(driver));
 		while(!isHome(driver)) {
 			driver.findElementByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").click();
 		}
