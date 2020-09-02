@@ -16,10 +16,12 @@ import io.appium.java_client.android.AndroidDriver;
 
 public class Droid_Settings_Helper {
 	
-	public void toggleBluetoothOnePlus(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+	public void toggleBluetoothOnePlus(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException, InterruptedException {
 		try {
+			Thread.sleep(10000);
 			((AndroidDriver) driver).startActivity(new Activity("com.android.settings","com.android.settings.Settings$BluetoothSettingsActivity"));
-			System.out.println(driver.getPageSource());
+			Thread.sleep(1000);
+			
 			if(driver.findElementsByXPath("//android.widget.LinearLayout/android.widget.TextView[@text='On']").size()>0) {
 				driver.findElementByXPath("//android.widget.LinearLayout/android.widget.TextView[@text='On']").click();
 				System.out.println("Hello");
@@ -44,10 +46,11 @@ public class Droid_Settings_Helper {
 	
 	public void toggleBluetoothSamsung(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			driver.findElementByXPath("//android.widget.TextView[@text='Connections']").click();
 			Thread.sleep(3000);
 			driver.findElementByXPath("//android.widget.Switch[@content-desc='Bluetooth']").click();
-			System.out.println(driver.getPageSource());
+			Thread.sleep(1000);
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
@@ -65,6 +68,7 @@ public class Droid_Settings_Helper {
 	
 	public boolean bluetoothOnSamsung(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			driver.findElementByXPath("//android.widget.TextView[@text='Connections']").click();
 			Thread.sleep(3000);
 			MobileElement m = driver.findElementByXPath("//android.widget.Switch[@content-desc='Bluetooth']");
@@ -84,6 +88,7 @@ public class Droid_Settings_Helper {
 	
 	public void enableHCILOGS(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			((AndroidDriver) driver).findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+"Developer options"+"\").instance(0))").click();
 			Thread.sleep(3000);
 			if(driver.findElementsByXPath("//android.widget.LinearLayout[@index='4']/android.widget.LinearLayout/android.widget.Switch[@text='On']").size()>0) {
@@ -91,6 +96,7 @@ public class Droid_Settings_Helper {
 			} else {
 				driver.findElementByXPath("//android.widget.LinearLayout[@index='4']/android.widget.LinearLayout/android.widget.Switch").click();
 			}
+			Thread.sleep(1000);
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();

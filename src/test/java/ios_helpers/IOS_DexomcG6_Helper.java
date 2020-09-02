@@ -30,6 +30,7 @@ public class IOS_DexomcG6_Helper {
 	// PRINT EGV VALUE FOR N MINS AND PRINT ANY ALERTS
 	public void getEGV_N_Mins(int mins,AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver,outputLog);
 			identifyError(driver, outputLog);
 			long finish = System.currentTimeMillis() + mins*60*1000; // end time
 			while (sessionActive(driver) && System.currentTimeMillis() < finish) {
@@ -56,6 +57,7 @@ public class IOS_DexomcG6_Helper {
 	// Connects to a new Transmitter. Should only be possible if session inactive?
 	public void connectNewTransmitter(String transcode, String sensorcode, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver,outputLog);
 			navigateHome(driver);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
 			Thread.sleep(1000);
@@ -63,31 +65,42 @@ public class IOS_DexomcG6_Helper {
 			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Pair New']").click();
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(transcode);
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
 			Thread.sleep(10000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
 			Thread.sleep(1000);
 			System.out.println(driver.getPageSource());
 			for(int i =0;i<sensorcode.length();i++) {
 				driver.findElement(By.name(String.valueOf(sensorcode.charAt(i)))).click();
 			}
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
 			Thread.sleep(1000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
 			Thread.sleep(10000);
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
 			System.out.println(driver.getPageSource());
+			alertHandler(driver,outputLog);
 			while(connectingTransmitter(driver)) {
 				Thread.sleep(10000);
 			}
+			alertHandler(driver,outputLog);
 			driver.findElementByXPath("//XCUIElementTypeButton[@label='Start Sensor']").click();
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
@@ -107,18 +120,25 @@ public class IOS_DexomcG6_Helper {
 	// Starts a new Sensor Session if sensor is currently inactive. 
 	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver,outputLog);
 			navigateHome(driver);
+			
 			if(sessionInactive(driver)) {
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='New Sensor']").click();
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Code']").click();
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Enter Manually']").click();
+				Thread.sleep(1000);
 				System.out.println(driver.getPageSource());
 				for(int i =0;i<code.length();i++) {
+					Thread.sleep(1000);
 					driver.findElement(By.name(String.valueOf(code.charAt(i)))).click();
 				}
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Save']").click();
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Confirm']").click();
-				System.out.println(driver.getPageSource());
 				Thread.sleep(10000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Next']").click();
 				Thread.sleep(10000);
@@ -142,6 +162,7 @@ public class IOS_DexomcG6_Helper {
 	
 	// Gets an EGV Value one time. IF we have an error obstructing getting an EGV Value, prints that error
 	public String getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+		alertHandler(driver,outputLog);
 		navigateHome(driver);
 		if(sessionActive(driver)) {
 			if(driver.findElementsByXPath("//XCUIElementTypeOther[@name='EGVCell']/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther").size()>0) {
@@ -157,11 +178,13 @@ public class IOS_DexomcG6_Helper {
 	
 	
 	// Ends a Sensor Session. Requires that a session is not inactive.
-	public void endSensorSession(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+	public void endSensorSession(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException, InterruptedException {
 		try {
+			alertHandler(driver,outputLog);
 			navigateHome(driver);
 			if(!sessionInactive(driver)) {
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Settings']").click();
+				Thread.sleep(1000);
 				RemoteWebElement sens = driver.findElementByXPath("//XCUIElementTypeTable");
 				String parentID = sens.getId();
 				HashMap<String, String> scrollObject = new HashMap<String, String>();
@@ -169,7 +192,9 @@ public class IOS_DexomcG6_Helper {
 				//scrollObject.put("direction", "down");
 				scrollObject.put("predicateString", "label == 'Stop Sensor'");
 				driver.executeScript("mobile:scroll", scrollObject);
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeStaticText[@label='Stop Sensor']").click();
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Stop Sensor']").click();
 				System.out.println(driver.getPageSource());
 				
@@ -191,6 +216,7 @@ public class IOS_DexomcG6_Helper {
 	// Function that checks for all errors and prints out what error 
 	// we got if there is an error. Should check every loop.
 	public boolean identifyError(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+		alertHandler(driver,outputLog);
 		if(sessionActive(driver)) {
 			System.out.println("No Error");
 			return false;
@@ -400,9 +426,16 @@ public class IOS_DexomcG6_Helper {
 	}
 	// COMPLETE
 	public void navigateHome(AppiumDriver<MobileElement> driver) {
-		System.out.println(isHome(driver));
+		//System.out.println(isHome(driver));
+		if(!isHome(driver)) {
+			System.out.println("BREAKKKKK");
+			System.out.println(driver.getPageSource());
+		}
 		while(!isHome(driver)) {
-			driver.findElementByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").click();
+			if(driver.findElementsByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").size()>0)
+				driver.findElementByXPath("//XCUIElementTypeNavigationBar/XCUIElementTypeButton").click();
+			else
+				return;
 		}
 	}
 	

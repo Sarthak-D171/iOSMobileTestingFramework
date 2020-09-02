@@ -16,15 +16,26 @@ import tests.BaseDriver;
 public class IOS_FaceTime_Helper extends BaseDriver{
 	public void videoCallIOS11(String num, AppiumDriver<MobileElement> driver, BufferedWriter outputLog, int mins) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='Video']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeSearchField").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeSearchField").sendKeys(num);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeTable/XCUIElementTypeCell/XCUIElementTypeButton[@name='FaceTime']").click();
+			Thread.sleep(1000);
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Started Facetime Call");
 			outputLog.newLine();
-			Thread.sleep(mins*60*1000);
+			
+			long finish = System.currentTimeMillis() + mins*60*1000;
+			while(System.currentTimeMillis() < finish) {
+				driver.findElementsByXPath("//XCUIElementTypeOther");
+				Thread.sleep(4000);
+			}
 			disconnectCall(driver, outputLog);
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
@@ -36,19 +47,30 @@ public class IOS_FaceTime_Helper extends BaseDriver{
 	}
 	public void videoCallIOS13(String num, AppiumDriver<MobileElement> driver, BufferedWriter outputLog, int mins) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='Add']").click();
+			Thread.sleep(1000);
 			System.out.println(driver.getPageSource());
 			driver.findElementByXPath("//XCUIElementTypeTextField").sendKeys(num);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='Mail.addContactButton']").click();
-			Thread.sleep(500);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='Cancel']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//XCUIElementTypeButton[@name='Video']").click();
+			Thread.sleep(1000);
 			System.out.println(driver.getPageSource());
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Started Facetime Call");
 			outputLog.newLine();
-			Thread.sleep(mins*60*1000);
+			
+			long finish = System.currentTimeMillis() + mins*60*1000;
+			while(System.currentTimeMillis() < finish) {
+				driver.findElementsByXPath("//XCUIElementTypeOther");
+				Thread.sleep(4000);
+			}
 			disconnectCall(driver, outputLog);
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
@@ -69,10 +91,12 @@ public class IOS_FaceTime_Helper extends BaseDriver{
 					break;
 				}
 			}
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Ended Facetime Call");
 			outputLog.newLine();
+			
 			return isCalling;
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  

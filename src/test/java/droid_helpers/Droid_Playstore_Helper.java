@@ -14,18 +14,22 @@ import io.appium.java_client.MobileElement;
 public class Droid_Playstore_Helper {
 	public void downloadApp(String search, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
-			Thread.sleep(5000);
-			System.out.println(driver.getPageSource());
+			Thread.sleep(10000);
+	
 			driver.findElementByXPath("//android.widget.TextView[@text='Search for apps & games']").click();
+			Thread.sleep(1000);
 			driver.findElementByXPath("//android.widget.EditText").sendKeys(search);
+			Thread.sleep(1000);
 			driver.getKeyboard().sendKeys(Keys.ENTER);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//android.widget.Button[@text='Install']").click();
+			Thread.sleep(1000);
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Installed App: "+ search);
 			outputLog.newLine();
-			System.out.println(driver.getPageSource());
+			
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();

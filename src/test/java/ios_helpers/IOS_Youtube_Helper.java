@@ -15,6 +15,7 @@ public class IOS_Youtube_Helper extends BaseDriver {
 	//unsure if this works
 	public void openplayVid(int mins, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='Play']").size()>0){
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Play']").click();
 			}
@@ -28,9 +29,10 @@ public class IOS_Youtube_Helper extends BaseDriver {
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Started Video");
 			outputLog.newLine();
+			
 			long finish = System.currentTimeMillis() + mins*60*1000;
 			while(System.currentTimeMillis() < finish) {
-				driver.findElementByXPath("//XCUIElementTypeCell");
+				driver.findElementsByXPath("//XCUIElementTypeOther");
 				Thread.sleep(4000);
 			}
 			

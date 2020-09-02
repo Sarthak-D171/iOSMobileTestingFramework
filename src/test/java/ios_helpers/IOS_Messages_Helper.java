@@ -15,20 +15,22 @@ import tests.BaseDriver;
 public class IOS_Messages_Helper extends BaseDriver{
 	public void sendMsg(String number, String body, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			if(isTexting(driver)) {
 				driver.findElementByXPath("//XCUIElementTypeTextField[@label='Message']").sendKeys(body);
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Send']").click();
 			}
 			else {
-				Thread.sleep(3000);
-				System.out.println(driver.getPageSource());
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Compose']").click();
-				System.out.println(driver.getPageSource());
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeTextField[@label='To:']").sendKeys(number);
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeTextField[@label='Message']").sendKeys(body);
+				Thread.sleep(1000);
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Send']").click();
-				System.out.println(driver.getPageSource());
 			}
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Sent text message");

@@ -2,20 +2,20 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2020-08-25T14:32:19 PDT" name="Default suite" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1648655">
+  <suite started-at="2020-09-02T11:17:27 PDT" name="Default suite" finished-at="2020-09-02T11:32:03 PDT" duration-ms="876133">
     <groups>
     </groups>
-    <test started-at="2020-08-25T14:32:19 PDT" name="Default test" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1648655">
+    <test started-at="2020-09-02T11:17:27 PDT" name="Default test" finished-at="2020-09-02T11:32:03 PDT" duration-ms="876133">
       <class name="tests.iosTester">
-        <test-method is-config="true" signature="setup()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:32:19 PDT" name="setup" finished-at="2020-08-25T14:32:21 PDT" duration-ms="1855" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-09-02T11:17:27 PDT" name="setup" finished-at="2020-09-02T11:17:27 PDT" duration-ms="43" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="finalDemoTest()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:32:21 PDT" name="finalDemoTest" finished-at="2020-08-25T14:59:47 PDT" duration-ms="1646751" status="PASS">
+        <test-method signature="generateTest()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-09-02T11:17:27 PDT" name="generateTest" finished-at="2020-09-02T11:32:03 PDT" duration-ms="876065" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- finalDemoTest -->
-        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-08-25T14:59:47 PDT" name="teardown" finished-at="2020-08-25T14:59:47 PDT" duration-ms="27" status="PASS">
+        </test-method> <!-- generateTest -->
+        <test-method is-config="true" signature="teardown()[pri:0, instance:tests.iosTester@11a9e7c8]" started-at="2020-09-02T11:32:03 PDT" name="teardown" finished-at="2020-09-02T11:32:03 PDT" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- teardown -->

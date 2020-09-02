@@ -2,6 +2,8 @@ package tests;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -35,7 +38,10 @@ public class BaseDriver {
 	
 	AppiumDriver<MobileElement> driver;
 	DesiredCapabilities caps;
-	String holder = "iOS";
+	String type;
+	String deviceName;
+	String versionName;
+	String udidName;
 	protected BufferedWriter outputLog;
 	
 	/*
@@ -53,12 +59,25 @@ public class BaseDriver {
 	*/
 	@BeforeTest
 	public void setup() throws IOException, InterruptedException {
-		String type = "iOS"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
-		String deviceName = "misha’s iPhone"; //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
-		String versionName = "";
-		String udidName = "";
+		ArrayList<String> phone_info = new ArrayList<String>();
+		try {
+	      File myObj = new File("src/test/java/tests/config.txt");
+	      Scanner myReader = new Scanner(myObj);
+	      while (myReader.hasNextLine()) {
+	        phone_info.add(myReader.nextLine());
+	      }
+	      myReader.close();
+	    } catch (FileNotFoundException e) {
+	      System.out.println("An error occurred.");
+	      e.printStackTrace();
+	    }
+		type = phone_info.get(0); //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String deviceName = phone_info.get(1); //EDIT TO MAKE SURE THIS IS CORRECT FOR YOUR DEVICE
+		String versionName = phone_info.get(2);
+		String udidName = phone_info.get(3);
 		outputLog = new BufferedWriter(new FileWriter("Test_OutPut_Log"));
-		if(type.equals("iOS")) {
+		if(type.equals("IOS")) {
+			/*
 			Process device_process = Runtime.getRuntime().exec("instruments -s devices");
 			StringBuilder device_output = new StringBuilder();
 			BufferedReader reader = new BufferedReader(
@@ -100,14 +119,14 @@ public class BaseDriver {
 				System.out.println(deviceName);
 				System.out.println(versionName);
 				System.out.println(udidName);
-				
-				caps = new DesiredCapabilities();
-				caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
-				caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-				caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, versionName);
-				caps.setCapability(MobileCapabilityType.UDID, udidName);
-				caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 			}
+				*/
+			caps = new DesiredCapabilities();
+			caps.setCapability(MobileCapabilityType.PLATFORM_NAME, type);
+			caps.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+			caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, versionName);
+			caps.setCapability(MobileCapabilityType.UDID, udidName);
+			caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 1800);
 		} else {
 			deviceName = "Samsung S8";
 			udidName = "988c1d474344434f56";
@@ -140,51 +159,51 @@ public class BaseDriver {
 	 */
 	public IOSDriver openNativeApp(String key) throws IOException {
 		HashMap<String,String> app_bundle = new HashMap<String,String>();
-		app_bundle.put("Activity", "com.apple.Fitness");
-		app_bundle.put("App Store", "com.apple.AppStore");
-		app_bundle.put("Books", "com.apple.iBooks");
-		app_bundle.put("Calculator", "com.apple.calculator");
-		app_bundle.put("Calendar", "com.apple.mobilecal");
-		app_bundle.put("Camera", "com.apple.camera");
-		app_bundle.put("Clips", "com.apple.clips");
-		app_bundle.put("Clock", "com.apple.mobiletimer");
-		app_bundle.put("Compass", "com.apple.compass");
-		app_bundle.put("Contacts", "com.apple.MobileAddressBook");
-		app_bundle.put("FaceTime", "com.apple.facetime");
-		app_bundle.put("Files", "com.apple.DocumentsApp");
-		app_bundle.put("Find Friends", "com.apple.mobileme.fmf1");
-		app_bundle.put("Fine iPhone", "com.apple.mobileme.fmip1");
-		app_bundle.put("GarageBand", "com.apple.mobilegarageband");
-		app_bundle.put("Health", "com.apple.Health");
-		app_bundle.put("Home", "com.apple.Home");
-		app_bundle.put("iCloud Drive", "com.apple.iCloudDriveApp");
-		app_bundle.put("iMovie", "com.apple.iMovie");
-		app_bundle.put("iTunes Store", "com.apple.MobileStore");
-		app_bundle.put("iTunes U", "com.apple.itunesu");
-		app_bundle.put("Mail", "com.apple.mobilemail");
-		app_bundle.put("Maps", "com.apple.Maps");
-		app_bundle.put("Messages", "com.apple.MobileSMS");
-		app_bundle.put("Measure", "com.apple.measure");
-		app_bundle.put("Music", "com.apple.Music");
-		app_bundle.put("News", "com.apple.news");
-		app_bundle.put("Notes", "com.apple.mobilenotes");
-		app_bundle.put("Phone", "com.apple.mobilephone");
-		app_bundle.put("Photos", "com.apple.mobileslideshow");
-		app_bundle.put("Photo Booth", "com.apple.Photo-Booth");
-		app_bundle.put("Podcasts", "com.apple.podcasts");
-		app_bundle.put("Reminders", "com.apple.reminders");
-		app_bundle.put("Safari", "com.apple.mobilesafari");
-		app_bundle.put("Settings", "com.apple.Preferences");
-		app_bundle.put("Shortcuts", "is.workflow.my.app");
-		app_bundle.put("Stocks", "com.apple.stocks");
-		app_bundle.put("Tips", "com.apple.tips");
-		app_bundle.put("TV", "com.apple.tv");
-		app_bundle.put("Videos", "com.apple.videos");
-		app_bundle.put("Voice Memos", "com.apple.VoiceMemos");
-		app_bundle.put("Wallet", "com.apple.Passbook");
-		app_bundle.put("Watch", "com.apple.Bridge");
-		app_bundle.put("Weather", "com.apple.weather");
-		if(!key.equals("Safari")){
+		app_bundle.put("activity", "com.apple.Fitness");
+		app_bundle.put("appstore", "com.apple.AppStore");
+		app_bundle.put("books", "com.apple.iBooks");
+		app_bundle.put("calculator", "com.apple.calculator");
+		app_bundle.put("calendar", "com.apple.mobilecal");
+		app_bundle.put("camera", "com.apple.camera");
+		app_bundle.put("clips", "com.apple.clips");
+		app_bundle.put("clock", "com.apple.mobiletimer");
+		app_bundle.put("compass", "com.apple.compass");
+		app_bundle.put("contacts", "com.apple.MobileAddressBook");
+		app_bundle.put("facetime", "com.apple.facetime");
+		app_bundle.put("files", "com.apple.DocumentsApp");
+		app_bundle.put("findfriends", "com.apple.mobileme.fmf1");
+		app_bundle.put("fineiphone", "com.apple.mobileme.fmip1");
+		app_bundle.put("garageband", "com.apple.mobilegarageband");
+		app_bundle.put("health", "com.apple.Health");
+		app_bundle.put("home", "com.apple.Home");
+		app_bundle.put("iclouddrive", "com.apple.iCloudDriveApp");
+		app_bundle.put("imovie", "com.apple.iMovie");
+		app_bundle.put("itunesstore", "com.apple.MobileStore");
+		app_bundle.put("itunesu", "com.apple.itunesu");
+		app_bundle.put("mail", "com.apple.mobilemail");
+		app_bundle.put("maps", "com.apple.Maps");
+		app_bundle.put("messages", "com.apple.MobileSMS");
+		app_bundle.put("measure", "com.apple.measure");
+		app_bundle.put("music", "com.apple.Music");
+		app_bundle.put("news", "com.apple.news");
+		app_bundle.put("notes", "com.apple.mobilenotes");
+		app_bundle.put("phone", "com.apple.mobilephone");
+		app_bundle.put("photos", "com.apple.mobileslideshow");
+		app_bundle.put("photobooth", "com.apple.Photo-Booth");
+		app_bundle.put("podcasts", "com.apple.podcasts");
+		app_bundle.put("reminders", "com.apple.reminders");
+		app_bundle.put("safari", "com.apple.mobilesafari");
+		app_bundle.put("settings", "com.apple.Preferences");
+		app_bundle.put("shortcuts", "is.workflow.my.app");
+		app_bundle.put("stocks", "com.apple.stocks");
+		app_bundle.put("tips", "com.apple.tips");
+		app_bundle.put("tv", "com.apple.tv");
+		app_bundle.put("videos", "com.apple.videos");
+		app_bundle.put("voicememos", "com.apple.VoiceMemos");
+		app_bundle.put("wallet", "com.apple.Passbook");
+		app_bundle.put("watch", "com.apple.Bridge");
+		app_bundle.put("weather", "com.apple.weather");
+		if(!key.equals("safari")){
 			caps.setCapability(IOSMobileCapabilityType.BUNDLE_ID, app_bundle.get(key));
 		} else {
 			caps.setCapability(CapabilityType.BROWSER_NAME,"safari");
@@ -295,8 +314,8 @@ public class BaseDriver {
 	 */
 	@AfterTest
 	public void teardown() throws IOException {
-		if(holder.equals("iOS")) iosHomeButton();
-		else if (holder.equals("android")) androidHomeButton();
+		if(type.equals("iOS")) iosHomeButton();
+		else if (type.equals("android")) androidHomeButton();
 		outputLog.close();
 		//driver.closeApp();
 		//driver.quit();

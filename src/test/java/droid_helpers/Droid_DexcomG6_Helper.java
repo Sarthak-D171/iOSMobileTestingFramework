@@ -17,6 +17,7 @@ public class Droid_DexcomG6_Helper {
 	
 	public void getEGVValNMins(int mins, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver, outputLog);
 			identifyError(driver, outputLog);
 			long finish = System.currentTimeMillis() + mins*60*1000; // end time
 			while (sessionActive(driver) && System.currentTimeMillis() < finish) {
@@ -40,6 +41,7 @@ public class Droid_DexcomG6_Helper {
 	}
 	
 	public String getEGVVal(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		alertHandler(driver, outputLog);
 		navigateHome(driver);
 		if(sessionActive(driver)) {
 			//WebElement egv = driver.findElement(By.id("com.dexcom.g6:id/textViewEGV"));
@@ -57,8 +59,8 @@ public class Droid_DexcomG6_Helper {
 	
 	public void connectNewTransmitter(String transcode, String sensorcode, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver, outputLog);
 			navigateHome(driver);
-			
 			driver.findElementByXPath("//android.widget.TextView[@text='SETTINGS']").click();
 			Thread.sleep(3000);
 			driver.findElementByXPath("//android.widget.TextView[@text='Transmitter']").click();
@@ -107,14 +109,19 @@ public class Droid_DexcomG6_Helper {
 
 	public void stopSensor(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver, outputLog);
 			navigateHome(driver);
 			if(!sessionInactive(driver)) {
 				driver.findElementByXPath("//android.widget.TextView[@text='SETTINGS']").click();
+				Thread.sleep(1000);
 				((AndroidDriver) driver).findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""+"Stop Sensor"+"\").instance(0))").click();
 				driver.findElementByXPath("//android.widget.Button[@text='STOP SENSOR']").click();
+				Thread.sleep(1000);
 				if(driver.findElementsByXPath("//android.widget.Button[@text='OK']").size() >0) {
+					Thread.sleep(1000);
 					driver.findElementByXPath("//android.widget.Button[@text='OK']").click();
 				}
+				
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 				LocalDateTime now = LocalDateTime.now();
 				outputLog.write(dtf.format(now)+" Stopped Sensor");
@@ -131,6 +138,7 @@ public class Droid_DexcomG6_Helper {
 	}
 	public void startSensorSession(String code, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			alertHandler(driver, outputLog);
 			navigateHome(driver);
 			if(sessionInactive(driver)) {
 				driver.findElementByXPath("//android.widget.TextView[@text='New Sensor']").click();
@@ -165,6 +173,7 @@ public class Droid_DexcomG6_Helper {
 	
 	
 	public boolean identifyError(AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
+		alertHandler(driver, outputLog);
 		if(bluetoothError(driver)) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();

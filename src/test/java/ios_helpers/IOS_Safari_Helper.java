@@ -21,24 +21,27 @@ import tests.BaseDriver;
 public class IOS_Safari_Helper extends BaseDriver{
 	public void googleSearch(String search, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			goToURL("https://google.com",driver, outputLog);
+			Thread.sleep(1000);
 			driver.getContextHandles();
 			String currentContext = driver.getContext();
 			driver.context("NATIVE_APP");
 			driver.findElement(By.name("Search")).click();
+			Thread.sleep(1000);
 			//System.out.println(driver.getPageSource());
 			driver.findElementByXPath("//XCUIElementTypeOther[@label='Search']").sendKeys(search);
+			Thread.sleep(1000);
 			if(driver.findElementsByXPath("//XCUIElementTypeButton[@label='Search']").size()>0)
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='Search']").click();
 			else
 				driver.findElementByXPath("//XCUIElementTypeButton[@label='search']").click();
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Completed Google Search");
 			outputLog.newLine();
-			//vals.submit();
-			//driver.findElement(By.name("q")).submit();
-			//System.out.println(driver.getPageSource());
+			
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
@@ -68,10 +71,12 @@ public class IOS_Safari_Helper extends BaseDriver{
 		try {
 			driver.get(url);
 			Thread.sleep(4000);
+			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
 			outputLog.write(dtf.format(now)+" Went to URL");
 			outputLog.newLine();
+			
 		} catch(NoSuchElementException e) {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();

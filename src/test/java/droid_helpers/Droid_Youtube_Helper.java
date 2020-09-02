@@ -16,13 +16,16 @@ import tests.BaseDriver;
 public class Droid_Youtube_Helper extends BaseDriver{
 	public void openVid(String search, AppiumDriver<MobileElement> driver) throws InterruptedException, IOException {
 		try {
+			Thread.sleep(10000);
 			driver.findElementByXPath("//android.widget.ImageView[@content-desc='Search']").click();
+			Thread.sleep(1000);
 			MobileElement s = driver.findElementByXPath("//android.widget.EditText");
 			s.sendKeys(search);
+			
 			Thread.sleep(1000);
 			driver.getKeyboard().sendKeys(Keys.ENTER);
+			Thread.sleep(1000);
 			driver.findElementByXPath("//android.view.ViewGroup[@index='0']").click();
-			System.out.println(driver.getPageSource());
 			Thread.sleep(1000);
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  

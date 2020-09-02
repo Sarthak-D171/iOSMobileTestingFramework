@@ -21,9 +21,11 @@ import io.appium.java_client.android.AndroidDriver;
  */
 
 public class Droid_Chrome_Helper {
-	public void gotoURL(String url, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException {
+	public void gotoURL(String url, AppiumDriver<MobileElement> driver, BufferedWriter outputLog) throws IOException, InterruptedException {
 		try {
+			Thread.sleep(1000);
 			driver.get(url);
+			Thread.sleep(1000);
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();
