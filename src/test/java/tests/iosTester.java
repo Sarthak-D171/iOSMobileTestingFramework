@@ -408,7 +408,7 @@ public class iosTester extends BaseDriver{
 					IOS_Safari_Helper r = new IOS_Safari_Helper();
 					driver = openNativeApp("safari");
 					if(commands[1].toLowerCase().equals("search"))
-						r.googleSearch("hello",driver, outputLog);
+						r.googleSearch(commands[2],driver, outputLog);
 					if(commands[1].toLowerCase().equals("url"))
 						r.goToURL(commands[2], driver, outputLog);
 				}

@@ -309,8 +309,7 @@ public class BaseDriver {
 	
 	/*
 	 * RUNS AFTER EVERY TEST
-	 * 
-	 * Currently allows you to chain tests. Modify later according to needs.
+	 *
 	 */
 	@AfterTest
 	public void teardown() throws IOException {
